@@ -3,3 +3,5 @@ SUBTASKS.md
 USER_STORIES.md
 .codex/
 .github/
+frontend/node_modules/
+frontend/dist/
