@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: edtech-backend
+  datasource:
+    url: jdbc:sqlite:./backend/data/edtech.db
+    driver-class-name: org.sqlite.JDBC
+  jackson:
+    default-property-inclusion: non_null
+
+server:
+  port: 8080
