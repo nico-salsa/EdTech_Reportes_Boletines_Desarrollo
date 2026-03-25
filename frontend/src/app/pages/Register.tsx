@@ -13,43 +13,41 @@ export default function Register() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { register } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setSuccess(false);
 
-    // Validation
     if (!username.trim()) {
       setError('El nombre de usuario es obligatorio');
       return;
     }
 
     if (!password) {
-      setError('La contraseña es obligatoria');
-      return;
-    }
-
-    if (password.length < 4) {
-      setError('La contraseña debe tener al menos 4 caracteres');
+      setError('La contrasena es obligatoria');
       return;
     }
 
     if (password !== confirmPassword) {
-      setError('Las contraseñas no coinciden');
+      setError('Las contrasenas no coinciden');
       return;
     }
 
-    const result = register(username, password);
+    setIsSubmitting(true);
+    const result = await register(username, password);
+    setIsSubmitting(false);
+
     if (result) {
       setSuccess(true);
       setTimeout(() => {
         navigate('/dashboard');
       }, 1000);
     } else {
-      setError('El nombre de usuario ya existe');
+      setError('No fue posible crear la cuenta');
     }
   };
 
@@ -63,7 +61,7 @@ export default function Register() {
             </div>
             <div>
               <h1 className="text-2xl font-semibold text-foreground">EdTech</h1>
-              <p className="text-sm text-muted-foreground">Gestión Académica</p>
+              <p className="text-sm text-muted-foreground">Gestion Academica</p>
             </div>
           </div>
         </div>
@@ -79,38 +77,17 @@ export default function Register() {
           <form onSubmit={handleSubmit} className="space-y-5">
             <div className="space-y-2">
               <Label htmlFor="username">Nombre de usuario</Label>
-              <Input
-                id="username"
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                placeholder="Ingresa tu nombre de usuario"
-                className="w-full"
-              />
+              <Input id="username" type="text" value={username} onChange={(e) => setUsername(e.target.value)} placeholder="Ingresa tu nombre de usuario" className="w-full" />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="password">Contraseña</Label>
-              <Input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Crea una contraseña"
-                className="w-full"
-              />
+              <Label htmlFor="password">Contrasena</Label>
+              <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Crea una contrasena" className="w-full" />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="confirmPassword">Confirmar contraseña</Label>
-              <Input
-                id="confirmPassword"
-                type="password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                placeholder="Confirma tu contraseña"
-                className="w-full"
-              />
+              <Label htmlFor="confirmPassword">Confirmar contrasena</Label>
+              <Input id="confirmPassword" type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} placeholder="Confirma tu contrasena" className="w-full" />
             </div>
 
             {error && (
@@ -127,19 +104,16 @@ export default function Register() {
               </Alert>
             )}
 
-            <Button type="submit" className="w-full">
-              Registrarme
+            <Button type="submit" className="w-full" disabled={isSubmitting}>
+              {isSubmitting ? 'Creando cuenta...' : 'Registrarme'}
             </Button>
           </form>
 
           <div className="mt-6 text-center">
             <p className="text-sm text-muted-foreground">
-              ¿Ya tienes cuenta?{' '}
-              <button
-                onClick={() => navigate('/login')}
-                className="text-primary hover:underline font-medium"
-              >
-                Inicia sesión
+              {`Ya tienes cuenta? `}
+              <button onClick={() => navigate('/login')} className="text-primary hover:underline font-medium">
+                Inicia sesion
               </button>
             </p>
           </div>

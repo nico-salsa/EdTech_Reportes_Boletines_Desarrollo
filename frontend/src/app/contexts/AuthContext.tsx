@@ -1,78 +1,95 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import { clearSessionToken, requestJson, setSessionToken } from '../lib/api';
 
 interface User {
   id: string;
   username: string;
 }
 
+interface AuthSessionResponse {
+  user: User;
+  token: string;
+}
+
 interface AuthContextType {
   user: User | null;
-  login: (username: string, password: string) => boolean;
-  register: (username: string, password: string) => boolean;
-  logout: () => void;
+  login: (username: string, password: string) => Promise<boolean>;
+  register: (username: string, password: string) => Promise<boolean>;
+  logout: () => Promise<void>;
   isAuthenticated: boolean;
+  isLoading: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
+const USER_STORAGE_KEY = 'edtech_current_user';
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Check if user is logged in
-    const storedUser = localStorage.getItem('edtech_current_user');
+    const storedUser = localStorage.getItem(USER_STORAGE_KEY);
     if (storedUser) {
       setUser(JSON.parse(storedUser));
     }
+
+    requestJson<AuthSessionResponse>('/auth/session')
+      .then((session) => {
+        persistSession(session);
+      })
+      .catch(() => {
+        clearSession();
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
   }, []);
 
-  const register = (username: string, password: string): boolean => {
-    if (!username || !password) {
-      return false;
-    }
-
-    const users = JSON.parse(localStorage.getItem('edtech_users') || '[]');
-    
-    // Check if username already exists
-    if (users.some((u: any) => u.username === username)) {
-      return false;
-    }
-
-    const newUser = {
-      id: Date.now().toString(),
-      username,
-      password, // In a real app, this should be hashed
-    };
-
-    users.push(newUser);
-    localStorage.setItem('edtech_users', JSON.stringify(users));
-    
-    const userWithoutPassword = { id: newUser.id, username: newUser.username };
-    setUser(userWithoutPassword);
-    localStorage.setItem('edtech_current_user', JSON.stringify(userWithoutPassword));
-    
-    return true;
-  };
-
-  const login = (username: string, password: string): boolean => {
-    const users = JSON.parse(localStorage.getItem('edtech_users') || '[]');
-    const foundUser = users.find(
-      (u: any) => u.username === username && u.password === password
-    );
-
-    if (foundUser) {
-      const userWithoutPassword = { id: foundUser.id, username: foundUser.username };
-      setUser(userWithoutPassword);
-      localStorage.setItem('edtech_current_user', JSON.stringify(userWithoutPassword));
+  const register = async (username: string, password: string): Promise<boolean> => {
+    try {
+      const session = await requestJson<AuthSessionResponse>('/auth/register', {
+        method: 'POST',
+        body: JSON.stringify({ username, password }),
+      });
+      persistSession(session);
       return true;
+    } catch {
+      return false;
     }
-
-    return false;
   };
 
-  const logout = () => {
+  const login = async (username: string, password: string): Promise<boolean> => {
+    try {
+      const session = await requestJson<AuthSessionResponse>('/auth/login', {
+        method: 'POST',
+        body: JSON.stringify({ username, password }),
+      });
+      persistSession(session);
+      return true;
+    } catch {
+      return false;
+    }
+  };
+
+  const logout = async (): Promise<void> => {
+    try {
+      await requestJson<void>('/auth/logout', { method: 'POST' });
+    } catch {
+      // Ignore logout network errors and clear local state anyway.
+    }
+    clearSession();
+  };
+
+  const persistSession = (session: AuthSessionResponse) => {
+    setSessionToken(session.token);
+    localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(session.user));
+    setUser(session.user);
+  };
+
+  const clearSession = () => {
+    clearSessionToken();
+    localStorage.removeItem(USER_STORAGE_KEY);
     setUser(null);
-    localStorage.removeItem('edtech_current_user');
   };
 
   return (
@@ -83,6 +100,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         register,
         logout,
         isAuthenticated: !!user,
+        isLoading,
       }}
     >
       {children}

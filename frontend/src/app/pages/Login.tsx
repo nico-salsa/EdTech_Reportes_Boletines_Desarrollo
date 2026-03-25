@@ -11,10 +11,11 @@ export default function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
 
@@ -23,11 +24,14 @@ export default function Login() {
       return;
     }
 
-    const result = login(username, password);
+    setIsSubmitting(true);
+    const result = await login(username, password);
+    setIsSubmitting(false);
+
     if (result) {
       navigate('/dashboard');
     } else {
-      setError('Usuario o contraseña incorrectos');
+      setError('Usuario o contrasena incorrectos');
     }
   };
 
@@ -41,42 +45,28 @@ export default function Login() {
             </div>
             <div>
               <h1 className="text-2xl font-semibold text-foreground">EdTech</h1>
-              <p className="text-sm text-muted-foreground">Gestión Académica</p>
+              <p className="text-sm text-muted-foreground">Gestion Academica</p>
             </div>
           </div>
         </div>
 
         <div className="bg-card border border-border rounded-lg p-8 shadow-sm">
           <div className="mb-6">
-            <h2 className="text-xl font-semibold text-card-foreground mb-1">Iniciar sesión</h2>
+            <h2 className="text-xl font-semibold text-card-foreground mb-1">Iniciar sesion</h2>
             <p className="text-sm text-muted-foreground">
-              Accede a tu panel de gestión académica
+              Accede a tu panel de gestion academica
             </p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-5">
             <div className="space-y-2">
               <Label htmlFor="username">Nombre de usuario</Label>
-              <Input
-                id="username"
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                placeholder="Ingresa tu nombre de usuario"
-                className="w-full"
-              />
+              <Input id="username" type="text" value={username} onChange={(e) => setUsername(e.target.value)} placeholder="Ingresa tu nombre de usuario" className="w-full" />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="password">Contraseña</Label>
-              <Input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Ingresa tu contraseña"
-                className="w-full"
-              />
+              <Label htmlFor="password">Contrasena</Label>
+              <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Ingresa tu contrasena" className="w-full" />
             </div>
 
             {error && (
@@ -86,19 +76,16 @@ export default function Login() {
               </Alert>
             )}
 
-            <Button type="submit" className="w-full">
-              Iniciar sesión
+            <Button type="submit" className="w-full" disabled={isSubmitting}>
+              {isSubmitting ? 'Ingresando...' : 'Iniciar sesion'}
             </Button>
           </form>
 
           <div className="mt-6 text-center">
             <p className="text-sm text-muted-foreground">
-              ¿No tienes cuenta?{' '}
-              <button
-                onClick={() => navigate('/register')}
-                className="text-primary hover:underline font-medium"
-              >
-                Regístrate aquí
+              {`No tienes cuenta? `}
+              <button onClick={() => navigate('/register')} className="text-primary hover:underline font-medium">
+                Registrate aqui
               </button>
             </p>
           </div>
