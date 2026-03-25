@@ -1,5 +1,6 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { useAuth } from './AuthContext';
+import { requestJson } from '../lib/api';
 
 export interface Student {
   id: string;
@@ -30,149 +31,127 @@ export interface Course {
   createdAt: string;
 }
 
+interface CourseListItem {
+  id: string;
+}
+
 interface AppDataContextType {
   courses: Course[];
-  addCourse: (name: string) => boolean;
+  isLoading: boolean;
+  addCourse: (name: string) => Promise<boolean>;
   getCourse: (id: string) => Course | undefined;
-  addStudentToCourse: (courseId: string, student: Student) => void;
-  updateCourseActivities: (courseId: string, activities: Activity[]) => boolean;
-  updateGrade: (courseId: string, studentId: string, activityId: string, grade: number | null) => void;
-  getStudentById: (studentId: string) => Student | null;
+  addStudentToCourse: (courseId: string, student: Student) => Promise<void>;
+  updateCourseActivities: (courseId: string, activities: Activity[]) => Promise<boolean>;
+  updateGrade: (courseId: string, studentId: string, activityId: string, grade: number | null) => Promise<void>;
+  getStudentById: (studentId: string) => Promise<Student | null>;
+  refreshCourses: () => Promise<void>;
 }
 
 const AppDataContext = createContext<AppDataContextType | undefined>(undefined);
 
 export function AppDataProvider({ children }: { children: ReactNode }) {
-  const { user } = useAuth();
+  const { isAuthenticated } = useAuth();
   const [courses, setCourses] = useState<Course[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    if (user) {
-      const storedCourses = localStorage.getItem(`edtech_courses_${user.id}`);
-      if (storedCourses) {
-        setCourses(JSON.parse(storedCourses));
-      }
-    } else {
+    if (!isAuthenticated) {
       setCourses([]);
+      setIsLoading(false);
+      return;
     }
-  }, [user]);
 
-  const saveCourses = (newCourses: Course[]) => {
-    if (user) {
-      localStorage.setItem(`edtech_courses_${user.id}`, JSON.stringify(newCourses));
-      setCourses(newCourses);
+    void refreshCourses();
+  }, [isAuthenticated]);
+
+  const refreshCourses = async () => {
+    if (!isAuthenticated) {
+      setCourses([]);
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const summaries = await requestJson<CourseListItem[]>('/courses');
+      const detailedCourses = await Promise.all(
+        summaries.map((course) => requestJson<Course>(`/courses/${course.id}`)),
+      );
+      setCourses(detailedCourses);
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const addCourse = (name: string): boolean => {
-    if (!user || !name.trim()) return false;
-    
-    // Check for duplicate course name
-    if (courses.some(c => c.name.toLowerCase() === name.toLowerCase())) {
+  const addCourse = async (name: string): Promise<boolean> => {
+    try {
+      const course = await requestJson<Course>('/courses', {
+        method: 'POST',
+        body: JSON.stringify({ name }),
+      });
+      setCourses((current) => [course, ...current]);
+      return true;
+    } catch {
       return false;
     }
-
-    const newCourse: Course = {
-      id: Date.now().toString(),
-      name,
-      teacherId: user.id,
-      students: [],
-      activities: [],
-      grades: [],
-      createdAt: new Date().toISOString(),
-    };
-
-    saveCourses([...courses, newCourse]);
-    return true;
   };
 
   const getCourse = (id: string): Course | undefined => {
-    return courses.find(c => c.id === id);
+    return courses.find((course) => course.id === id);
   };
 
-  const addStudentToCourse = (courseId: string, student: Student) => {
-    const updatedCourses = courses.map(course => {
-      if (course.id === courseId) {
-        // Check if student already exists in course
-        if (course.students.some(s => s.studentId === student.studentId)) {
-          return course;
-        }
-        return {
-          ...course,
-          students: [...course.students, student],
-        };
-      }
-      return course;
+  const replaceCourse = (updatedCourse: Course) => {
+    setCourses((current) => current.map((course) => (course.id === updatedCourse.id ? updatedCourse : course)));
+  };
+
+  const addStudentToCourse = async (courseId: string, student: Student) => {
+    const updatedCourse = await requestJson<Course>(`/courses/${courseId}/students`, {
+      method: 'POST',
+      body: JSON.stringify(student),
     });
-    saveCourses(updatedCourses);
-    
-    // Save student globally
-    const allStudents = JSON.parse(localStorage.getItem('edtech_all_students') || '[]');
-    if (!allStudents.some((s: Student) => s.studentId === student.studentId)) {
-      allStudents.push(student);
-      localStorage.setItem('edtech_all_students', JSON.stringify(allStudents));
-    }
+    replaceCourse(updatedCourse);
   };
 
-  const updateCourseActivities = (courseId: string, activities: Activity[]): boolean => {
-    // Validate activities
-    const totalPercentage = activities.reduce((sum, a) => sum + a.percentage, 0);
-    if (Math.abs(totalPercentage - 100) > 0.01) {
+  const updateCourseActivities = async (courseId: string, activities: Activity[]): Promise<boolean> => {
+    try {
+      const updatedCourse = await requestJson<Course>(`/courses/${courseId}/activities`, {
+        method: 'PUT',
+        body: JSON.stringify(activities),
+      });
+      replaceCourse(updatedCourse);
+      return true;
+    } catch {
       return false;
     }
-
-    const updatedCourses = courses.map(course => {
-      if (course.id === courseId) {
-        return {
-          ...course,
-          activities,
-        };
-      }
-      return course;
-    });
-    saveCourses(updatedCourses);
-    return true;
   };
 
-  const updateGrade = (courseId: string, studentId: string, activityId: string, grade: number | null) => {
-    const updatedCourses = courses.map(course => {
-      if (course.id === courseId) {
-        const gradeIndex = course.grades.findIndex(
-          g => g.studentId === studentId && g.activityId === activityId
-        );
-
-        let newGrades = [...course.grades];
-        if (gradeIndex >= 0) {
-          newGrades[gradeIndex] = { studentId, activityId, grade };
-        } else {
-          newGrades.push({ studentId, activityId, grade });
-        }
-
-        return {
-          ...course,
-          grades: newGrades,
-        };
-      }
-      return course;
+  const updateGrade = async (courseId: string, studentId: string, activityId: string, grade: number | null) => {
+    const updatedCourse = await requestJson<Course>(`/courses/${courseId}/grades`, {
+      method: 'PUT',
+      body: JSON.stringify({ studentId, activityId, grade }),
     });
-    saveCourses(updatedCourses);
+    replaceCourse(updatedCourse);
   };
 
-  const getStudentById = (studentId: string): Student | null => {
-    const allStudents = JSON.parse(localStorage.getItem('edtech_all_students') || '[]');
-    return allStudents.find((s: Student) => s.studentId === studentId) || null;
+  const getStudentById = async (studentId: string): Promise<Student | null> => {
+    try {
+      return await requestJson<Student>(`/students/${studentId}`);
+    } catch {
+      return null;
+    }
   };
 
   return (
     <AppDataContext.Provider
       value={{
         courses,
+        isLoading,
         addCourse,
         getCourse,
         addStudentToCourse,
         updateCourseActivities,
         updateGrade,
         getStudentById,
+        refreshCourses,
       }}
     >
       {children}

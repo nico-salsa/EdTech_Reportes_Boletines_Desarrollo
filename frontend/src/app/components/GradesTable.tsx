@@ -16,63 +16,46 @@ export function GradesTable({ course }: GradesTableProps) {
   const [exportStudentId, setExportStudentId] = useState<string | null>(null);
 
   const getGrade = (studentId: string, activityId: string): number | null => {
-    const gradeEntry = course.grades.find(
-      (g) => g.studentId === studentId && g.activityId === activityId
-    );
+    const gradeEntry = course.grades.find((grade) => grade.studentId === studentId && grade.activityId === activityId);
     return gradeEntry?.grade ?? null;
   };
 
   const handleGradeChange = (studentId: string, activityId: string, value: string) => {
     if (value === '') {
-      updateGrade(course.id, studentId, activityId, null);
-    } else {
-      const numValue = parseFloat(value);
-      if (!isNaN(numValue) && numValue >= 0 && numValue <= 5) {
-        updateGrade(course.id, studentId, activityId, numValue);
-      }
+      void updateGrade(course.id, studentId, activityId, null);
+      return;
+    }
+
+    const numValue = parseFloat(value);
+    if (!Number.isNaN(numValue) && numValue >= 0) {
+      void updateGrade(course.id, studentId, activityId, numValue);
     }
   };
 
   const calculateAverage = (studentId: string): number | null => {
-    const studentGrades = course.activities.map((activity) =>
-      getGrade(studentId, activity.id)
-    );
-    
-    if (studentGrades.every((g) => g === null)) {
+    if (course.activities.length === 0) {
       return null;
     }
 
-    const validGrades = studentGrades.filter((g) => g !== null) as number[];
-    if (validGrades.length === 0) {
-      return null;
-    }
-
-    return validGrades.reduce((sum, g) => sum + g, 0) / validGrades.length;
+    const total = course.activities.reduce((sum, activity) => sum + (getGrade(studentId, activity.id) ?? 0), 0);
+    return total / course.activities.length;
   };
 
   const calculateWeightedAverage = (studentId: string): number | null => {
-    let totalWeighted = 0;
-    let totalPercentage = 0;
-
-    for (const activity of course.activities) {
-      const grade = getGrade(studentId, activity.id);
-      if (grade !== null) {
-        totalWeighted += grade * activity.percentage;
-        totalPercentage += activity.percentage;
-      }
-    }
-
-    if (totalPercentage === 0) {
+    if (course.activities.length === 0) {
       return null;
     }
 
-    return totalWeighted / totalPercentage;
+    const total = course.activities.reduce(
+      (sum, activity) => sum + (getGrade(studentId, activity.id) ?? 0) * activity.percentage,
+      0,
+    );
+
+    return total / 100;
   };
 
   const hasEmptyGrades = (studentId: string): boolean => {
-    return course.activities.some(
-      (activity) => getGrade(studentId, activity.id) === null
-    );
+    return course.activities.some((activity) => getGrade(studentId, activity.id) === null);
   };
 
   return (
@@ -80,29 +63,16 @@ export function GradesTable({ course }: GradesTableProps) {
       <table className="w-full border-collapse">
         <thead>
           <tr className="bg-muted/50">
-            <th className="border border-border p-3 text-left font-semibold text-foreground min-w-[200px]">
-              Estudiante
-            </th>
+            <th className="border border-border p-3 text-left font-semibold text-foreground min-w-[200px]">Estudiante</th>
             {course.activities.map((activity) => (
-              <th
-                key={activity.id}
-                className="border border-border p-3 text-center font-semibold text-foreground min-w-[140px]"
-              >
+              <th key={activity.id} className="border border-border p-3 text-center font-semibold text-foreground min-w-[140px]">
                 <div>{activity.name}</div>
-                <div className="text-xs font-normal text-muted-foreground mt-1">
-                  {activity.percentage}%
-                </div>
+                <div className="text-xs font-normal text-muted-foreground mt-1">{activity.percentage}%</div>
               </th>
             ))}
-            <th className="border border-border p-3 text-center font-semibold text-foreground min-w-[120px]">
-              Promedio Simple
-            </th>
-            <th className="border border-border p-3 text-center font-semibold text-foreground min-w-[120px]">
-              Promedio Ponderado
-            </th>
-            <th className="border border-border p-3 text-center font-semibold text-foreground min-w-[120px]">
-              Acciones
-            </th>
+            <th className="border border-border p-3 text-center font-semibold text-foreground min-w-[120px]">Promedio Simple</th>
+            <th className="border border-border p-3 text-center font-semibold text-foreground min-w-[120px]">Promedio Ponderado</th>
+            <th className="border border-border p-3 text-center font-semibold text-foreground min-w-[120px]">Acciones</th>
           </tr>
         </thead>
         <tbody>
@@ -122,34 +92,11 @@ export function GradesTable({ course }: GradesTableProps) {
                   const isEditing = editingCell === cellId;
 
                   return (
-                    <td
-                      key={activity.id}
-                      className="border border-border p-2 text-center"
-                      onClick={() => setEditingCell(cellId)}
-                    >
+                    <td key={activity.id} className="border border-border p-2 text-center" onClick={() => setEditingCell(cellId)}>
                       {isEditing ? (
-                        <Input
-                          type="number"
-                          step="0.1"
-                          min="0"
-                          max="5"
-                          value={grade ?? ''}
-                          onChange={(e) =>
-                            handleGradeChange(student.studentId, activity.id, e.target.value)
-                          }
-                          onBlur={() => setEditingCell(null)}
-                          autoFocus
-                          className="w-full text-center"
-                          placeholder="0.0"
-                        />
+                        <Input type="number" step="0.1" min="0" value={grade ?? ''} onChange={(e) => handleGradeChange(student.studentId, activity.id, e.target.value)} onBlur={() => setEditingCell(null)} autoFocus className="w-full text-center" placeholder="0.0" />
                       ) : (
-                        <div
-                          className={`p-2 rounded cursor-pointer hover:bg-accent transition-colors ${
-                            grade === null
-                              ? 'text-muted-foreground italic'
-                              : 'text-foreground font-medium'
-                          }`}
-                        >
+                        <div className={`p-2 rounded cursor-pointer hover:bg-accent transition-colors ${grade === null ? 'text-muted-foreground italic' : 'text-foreground font-medium'}`}>
                           {grade !== null ? grade.toFixed(1) : 'Sin nota'}
                         </div>
                       )}
@@ -157,27 +104,13 @@ export function GradesTable({ course }: GradesTableProps) {
                   );
                 })}
                 <td className="border border-border p-3 text-center">
-                  {average !== null ? (
-                    <span className="font-semibold text-foreground">{average.toFixed(2)}</span>
-                  ) : (
-                    <span className="text-muted-foreground italic">â€”</span>
-                  )}
+                  {average !== null ? <span className="font-semibold text-foreground">{average.toFixed(2)}</span> : <span className="text-muted-foreground italic">—</span>}
                 </td>
                 <td className="border border-border p-3 text-center">
-                  {weightedAverage !== null ? (
-                    <span className="font-semibold text-foreground">
-                      {weightedAverage.toFixed(2)}
-                    </span>
-                  ) : (
-                    <span className="text-muted-foreground italic">â€”</span>
-                  )}
+                  {weightedAverage !== null ? <span className="font-semibold text-foreground">{weightedAverage.toFixed(2)}</span> : <span className="text-muted-foreground italic">—</span>}
                 </td>
                 <td className="border border-border p-3 text-center">
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => setExportStudentId(student.studentId)}
-                  >
+                  <Button size="sm" variant="outline" onClick={() => setExportStudentId(student.studentId)}>
                     <Download className="w-4 h-4 mr-2" />
                     Exportar
                   </Button>
@@ -188,14 +121,7 @@ export function GradesTable({ course }: GradesTableProps) {
         </tbody>
       </table>
 
-      {exportStudentId && (
-        <ExportReportModal
-          course={course}
-          studentId={exportStudentId}
-          hasEmptyGrades={hasEmptyGrades(exportStudentId)}
-          onClose={() => setExportStudentId(null)}
-        />
-      )}
+      {exportStudentId && <ExportReportModal course={course} studentId={exportStudentId} hasEmptyGrades={hasEmptyGrades(exportStudentId)} onClose={() => setExportStudentId(null)} />}
     </div>
   );
 }

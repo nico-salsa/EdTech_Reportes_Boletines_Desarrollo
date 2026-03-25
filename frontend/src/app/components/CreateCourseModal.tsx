@@ -16,9 +16,10 @@ export function CreateCourseModal({ isOpen, onClose }: CreateCourseModalProps) {
   const [courseName, setCourseName] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { addCourse } = useAppData();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setSuccess(false);
@@ -28,7 +29,10 @@ export function CreateCourseModal({ isOpen, onClose }: CreateCourseModalProps) {
       return;
     }
 
-    const result = addCourse(courseName);
+    setIsSubmitting(true);
+    const result = await addCourse(courseName);
+    setIsSubmitting(false);
+
     if (result) {
       setSuccess(true);
       setTimeout(() => {
@@ -37,7 +41,7 @@ export function CreateCourseModal({ isOpen, onClose }: CreateCourseModalProps) {
         onClose();
       }, 1000);
     } else {
-      setError('Ya existe un curso con este nombre');
+      setError('No fue posible crear el curso');
     }
   };
 
@@ -58,13 +62,7 @@ export function CreateCourseModal({ isOpen, onClose }: CreateCourseModalProps) {
           <div className="space-y-4 py-4">
             <div className="space-y-2">
               <Label htmlFor="courseName">Nombre del curso</Label>
-              <Input
-                id="courseName"
-                value={courseName}
-                onChange={(e) => setCourseName(e.target.value)}
-                placeholder="Ej: Matemáticas Avanzadas"
-                className="w-full"
-              />
+              <Input id="courseName" value={courseName} onChange={(e) => setCourseName(e.target.value)} placeholder="Ej: Matematicas Avanzadas" className="w-full" />
             </div>
 
             {error && (
@@ -82,10 +80,8 @@ export function CreateCourseModal({ isOpen, onClose }: CreateCourseModalProps) {
             )}
           </div>
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={handleClose}>
-              Cancelar
-            </Button>
-            <Button type="submit">Guardar curso</Button>
+            <Button type="button" variant="outline" onClick={handleClose}>Cancelar</Button>
+            <Button type="submit" disabled={isSubmitting}>{isSubmitting ? 'Guardando...' : 'Guardar curso'}</Button>
           </DialogFooter>
         </form>
       </DialogContent>

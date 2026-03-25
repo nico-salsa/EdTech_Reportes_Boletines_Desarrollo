@@ -21,18 +21,23 @@ export function AddStudentModal({ courseId, isOpen, onClose }: AddStudentModalPr
   const [success, setSuccess] = useState(false);
   const [searched, setSearched] = useState(false);
   const [foundStudent, setFoundStudent] = useState<Student | null>(null);
+  const [isSearching, setIsSearching] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { addStudentToCourse, getStudentById } = useAppData();
 
-  const handleSearch = () => {
+  const handleSearch = async () => {
     setError('');
     setSuccess(false);
-    
+
     if (!studentId.trim()) {
       setError('El ID del estudiante es obligatorio');
       return;
     }
 
-    const existing = getStudentById(studentId);
+    setIsSearching(true);
+    const existing = await getStudentById(studentId);
+    setIsSearching(false);
+
     if (existing) {
       setFoundStudent(existing);
       setName(existing.name);
@@ -45,7 +50,7 @@ export function AddStudentModal({ courseId, isOpen, onClose }: AddStudentModalPr
     setSearched(true);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setSuccess(false);
@@ -61,29 +66,29 @@ export function AddStudentModal({ courseId, isOpen, onClose }: AddStudentModalPr
     }
 
     if (!email.trim()) {
-      setError('El correo electrónico es obligatorio');
+      setError('El correo electronico es obligatorio');
       return;
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      setError('El correo electrónico no es válido');
+      setError('El correo electronico no es valido');
       return;
     }
 
-    const newStudent: Student = {
-      id: Date.now().toString(),
-      studentId,
-      name,
-      email,
-    };
-
-    addStudentToCourse(courseId, newStudent);
-    setSuccess(true);
-    setTimeout(() => {
-      resetForm();
-      onClose();
-    }, 1000);
+    setIsSubmitting(true);
+    try {
+      await addStudentToCourse(courseId, { id: foundStudent?.id ?? '', studentId, name, email });
+      setSuccess(true);
+      setTimeout(() => {
+        resetForm();
+        onClose();
+      }, 1000);
+    } catch {
+      setError('No fue posible agregar el estudiante');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const resetForm = () => {
@@ -112,20 +117,10 @@ export function AddStudentModal({ courseId, isOpen, onClose }: AddStudentModalPr
             <div className="space-y-2">
               <Label htmlFor="studentId">ID del estudiante</Label>
               <div className="flex gap-2">
-                <Input
-                  id="studentId"
-                  value={studentId}
-                  onChange={(e) => {
-                    setStudentId(e.target.value);
-                    setSearched(false);
-                    setFoundStudent(null);
-                  }}
-                  placeholder="Ingresa el ID"
-                  className="flex-1"
-                />
-                <Button type="button" onClick={handleSearch}>
+                <Input id="studentId" value={studentId} onChange={(e) => { setStudentId(e.target.value); setSearched(false); setFoundStudent(null); }} placeholder="Ingresa el ID" className="flex-1" />
+                <Button type="button" onClick={() => void handleSearch()} disabled={isSearching}>
                   <Search className="w-4 h-4 mr-2" />
-                  Buscar
+                  {isSearching ? 'Buscando...' : 'Buscar'}
                 </Button>
               </div>
             </div>
@@ -133,18 +128,14 @@ export function AddStudentModal({ courseId, isOpen, onClose }: AddStudentModalPr
             {searched && foundStudent && (
               <Alert className="border-blue-200 bg-blue-50 text-blue-900">
                 <CheckCircle2 className="h-4 w-4 text-blue-600" />
-                <AlertDescription>
-                  Estudiante encontrado. Los datos se autocompletaron.
-                </AlertDescription>
+                <AlertDescription>Estudiante encontrado. Los datos se autocompletaron.</AlertDescription>
               </Alert>
             )}
 
             {searched && !foundStudent && (
               <Alert className="border-yellow-200 bg-yellow-50 text-yellow-900">
                 <AlertCircle className="h-4 w-4 text-yellow-600" />
-                <AlertDescription>
-                  ID no encontrado. Completa los datos para registrar un nuevo estudiante.
-                </AlertDescription>
+                <AlertDescription>ID no encontrado. Completa los datos para registrar un nuevo estudiante.</AlertDescription>
               </Alert>
             )}
 
@@ -152,27 +143,12 @@ export function AddStudentModal({ courseId, isOpen, onClose }: AddStudentModalPr
               <>
                 <div className="space-y-2">
                   <Label htmlFor="name">Nombre completo</Label>
-                  <Input
-                    id="name"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    placeholder="Nombre del estudiante"
-                    className="w-full"
-                    disabled={!!foundStudent}
-                  />
+                  <Input id="name" value={name} onChange={(e) => setName(e.target.value)} placeholder="Nombre del estudiante" className="w-full" disabled={!!foundStudent} />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="email">Correo electrónico</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="correo@ejemplo.com"
-                    className="w-full"
-                    disabled={!!foundStudent}
-                  />
+                  <Label htmlFor="email">Correo electronico</Label>
+                  <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="correo@ejemplo.com" className="w-full" disabled={!!foundStudent} />
                 </div>
               </>
             )}
@@ -192,12 +168,8 @@ export function AddStudentModal({ courseId, isOpen, onClose }: AddStudentModalPr
             )}
           </div>
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={handleClose}>
-              Cancelar
-            </Button>
-            <Button type="submit" disabled={!searched}>
-              Agregar al curso
-            </Button>
+            <Button type="button" variant="outline" onClick={handleClose}>Cancelar</Button>
+            <Button type="submit" disabled={!searched || isSubmitting}>{isSubmitting ? 'Agregando...' : 'Agregar al curso'}</Button>
           </DialogFooter>
         </form>
       </DialogContent>
