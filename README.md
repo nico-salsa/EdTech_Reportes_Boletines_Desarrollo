@@ -1,0 +1,54 @@
+# EdTech
+
+Aplicacion local para docentes orientada a gestionar cursos, estudiantes, programas evaluativos, registro de notas y exportacion de boletines.
+
+## Objetivo del MVP
+
+El MVP busca cubrir el flujo minimo de trabajo de un docente desde el acceso al sistema hasta la generacion de un boletin individual.
+
+Historias incluidas:
+
+- `HDU_1`: Registrar usuario
+- `HDU_2`: Iniciar sesion
+- `HDU_3`: Crear curso
+- `HDU_5`: Agregar estudiantes al curso
+- `HDU_11`: Definir programa del curso
+- `HDU_12`: Eliminar instancia de evaluacion del programa
+- `HDU_13`: Actualizar instancia de evaluacion del programa
+- `HDU_14`: Registrar nota por estudiante e instancia
+- `HDU_15`: Generar boletin individual
+
+## Propuesta tecnica inicial
+
+- Frontend local en `localhost`: `React`, `Vite` y `TypeScript`
+- Backend local en `localhost`: `Java 21`, `Spring Boot`
+- Persistencia local: `SQLite`
+- Exportacion: `PDF`, `HTML` y `JSON`
+- Motor PDF propuesto: generacion desde plantilla HTML con `OpenHTMLtoPDF`
+- Seguridad MVP: autenticacion local simple con `username` y `password`
+
+## Lineamientos clave
+
+- La aplicacion es local tanto en frontend como en backend.
+- Los cursos se consideran duplicados por docente, no a nivel global.
+- El boletin individual del MVP debe ser simple pero correcto.
+- Las notas vacias deben distinguirse visualmente, pero para calculo cuentan como `0`.
+- La suma de ponderaciones del programa debe ser exactamente `100%`.
+
+## Calidad y pruebas
+
+El desarrollo debe dejar el proyecto listo para automatizacion con estas herramientas mandatorias de QA:
+
+- `SerenityBDD + Cucumber` para pruebas funcionales
+- `Karate` para pruebas de API
+- `k6` para pruebas de rendimiento
+
+## Artefactos de contexto
+
+- Decisiones tecnicas persistentes: `docs/DECISIONES_TECNICAS_MVP.md`
+- Cambio OpenSpec activo: `openspec/changes/local-mvp-docente-boletines/`
+
+## Notas de repositorio
+
+- `PRD.md`, `SUBTASKS.md` y `USER_STORIES.md` son documentos de apoyo local y no deben publicarse en GitHub.
+- Los cambios deben hacerse con commits atomicos y mensajes en espanol usando Conventional Commits.
