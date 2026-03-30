@@ -4,6 +4,14 @@ spring:
   datasource:
     url: jdbc:sqlite:./backend/data/edtech.db
     driver-class-name: org.sqlite.JDBC
+  jpa:
+    database-platform: org.hibernate.community.dialect.SQLiteDialect
+    hibernate:
+      ddl-auto: none
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
   jackson:
     default-property-inclusion: non_null
 

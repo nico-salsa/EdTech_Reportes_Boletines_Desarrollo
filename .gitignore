@@ -11,3 +11,4 @@ frontend/.env.local
 backend/.gradle/
 backend/build/
 backend/data/*.db
+backend/.gradle-user-home/

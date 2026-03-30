@@ -21,8 +21,10 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-jdbc")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.security:spring-security-crypto")
     implementation("org.xerial:sqlite-jdbc:3.46.1.3")
+    implementation("org.hibernate.orm:hibernate-community-dialects")
     implementation("com.openhtmltopdf:openhtmltopdf-pdfbox:1.0.10")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
