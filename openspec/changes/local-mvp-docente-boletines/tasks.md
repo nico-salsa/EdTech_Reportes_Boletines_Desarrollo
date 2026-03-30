@@ -1,7 +1,7 @@
-﻿## 1. Estructura base del backend
+## 1. Estructura base del backend
 
 - [x] 1.1 Crear el esqueleto inicial de `backend/` con Gradle, Java 21 y Spring Boot
-- [ ] 1.2 Configurar SQLite, JPA y la estructura modular base por dominios (`auth`, `courses`, `students`, `evaluation-program`, `gradebook`, `reports`)
+- [x] 1.2 Configurar SQLite, JPA y la estructura modular base por dominios (`auth`, `courses`, `students`, `evaluation-program`, `gradebook`, `reports`)
 - [x] 1.3 Definir configuracion local compartida para ejecucion en `localhost` y manejo de errores de API
 
 ## 2. Autenticacion local
@@ -45,4 +45,4 @@
 
 - [x] 7.1 Revisar consistencia de contratos entre backend y frontend del MVP
 - [x] 7.2 Documentar scripts de ejecucion local para `frontend/` y `backend/`
-- [ ] 7.3 Ejecutar validaciones finales del cambio y preparar el siguiente paso de implementacion con `/opsx:apply`
+- [x] 7.3 Ejecutar validaciones finales del cambio y preparar el siguiente paso de implementacion con `/opsx:apply`
