@@ -1,4 +1,4 @@
-# EdTech
+﻿# EdTech
 
 Aplicacion local para docentes orientada a gestionar cursos, estudiantes, programas evaluativos, registro de notas y exportacion de boletines.
 
@@ -35,13 +35,12 @@ Historias incluidas:
 - Las notas vacias deben distinguirse visualmente, pero para calculo cuentan como `0`.
 - La suma de ponderaciones del programa debe ser exactamente `100%`.
 
-## Calidad y pruebas
+## Calidad minima de desarrollo
 
-El desarrollo debe dejar el proyecto listo para automatizacion con estas herramientas mandatorias de QA:
-
-- `SerenityBDD + Cucumber` para pruebas funcionales
-- `Karate` para pruebas de API
-- `k6` para pruebas de rendimiento
+- Mantener separacion clara entre `frontend/` y `backend/`
+- Evitar code smells evidentes y respetar responsabilidades por modulo
+- Mantener contratos de API claros y consistentes con la UI
+- La automatizacion de QA se maneja en un frente aparte y no hace parte de este cambio de desarrollo
 
 ## Artefactos de contexto
 

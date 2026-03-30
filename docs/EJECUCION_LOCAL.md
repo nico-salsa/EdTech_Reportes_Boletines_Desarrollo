@@ -1,4 +1,4 @@
-# Ejecucion Local
+﻿# Ejecucion Local
 
 ## Requisitos
 
@@ -62,6 +62,5 @@ Detalles:
 
 ## Pendientes tecnicos conocidos
 
-- Agregar Gradle Wrapper al repositorio cuando el entorno lo permita
-- Incorporar la base automatizada de calidad (`SerenityBDD`, `Karate`, `k6`)
-- Ejecutar validaciones completas de compilacion con dependencias instaladas
+- Ejecutar validaciones completas de compilacion en cada nueva iteracion relevante
+- Mantener alineados los contratos entre frontend y backend cuando siga el desarrollo

@@ -1,4 +1,4 @@
-# Decisiones Tecnicas del MVP
+﻿# Decisiones Tecnicas del MVP
 
 Este documento consolida las decisiones tecnicas y operativas ya acordadas para el MVP de EdTech. Su objetivo es evitar ambiguedades durante la exploracion, especificacion e implementacion.
 
@@ -48,7 +48,7 @@ Historias fuera de este MVP:
 
 Motivo:
 
-- Permite construir una UI local rapida, mantenible y facil de automatizar desde QA.
+- Permite construir una UI local rapida, mantenible y facil de evolucionar.
 
 ### Backend
 
@@ -58,7 +58,7 @@ Motivo:
 
 Motivo:
 
-- Se integra bien con validaciones, pruebas automatizadas y flujos de negocio del MVP.
+- Se integra bien con validaciones y flujos de negocio del MVP.
 
 ### Persistencia
 
@@ -94,19 +94,14 @@ Decision asociada:
 - Al editar ponderaciones, los promedios deben recalcularse.
 - Al generar boletin con notas vacias, el sistema debe advertir antes de exportar.
 
-## Calidad y automatizacion
+## Calidad minima de desarrollo
 
-Herramientas mandatorias:
-
-- `SerenityBDD + Cucumber` para funcional
-- `Karate` para API
-- `k6` para rendimiento
-
-Implicaciones tecnicas:
+Lineamientos base para este cambio:
 
 - Los flujos criticos deben poder ejecutarse localmente en `localhost`.
 - La UI debe tener estados claros para validaciones y mensajes de error.
-- Las APIs deben ser predecibles y faciles de consumir en pruebas automatizadas.
+- Las APIs deben ser predecibles y consistentes con el frontend.
+- El codigo nuevo debe evitar code smells evidentes y mantener separacion razonable de responsabilidades.
 
 ## Convenciones de trabajo
 
