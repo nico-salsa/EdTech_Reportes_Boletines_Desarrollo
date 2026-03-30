@@ -1,6 +1,6 @@
-## Why
+﻿## Why
 
-Los docentes necesitan una herramienta local que reduzca el trabajo manual de registrar estudiantes, definir evaluaciones, calcular promedios y generar boletines individuales sin depender de hojas de calculo dispersas. Este cambio se propone ahora para convertir el alcance del MVP ya priorizado en una base formal de especificacion que permita construir el producto con reglas claras de negocio, automatizacion y exportacion.
+Los docentes necesitan una herramienta local que reduzca el trabajo manual de registrar estudiantes, definir evaluaciones, calcular promedios y generar boletines individuales sin depender de hojas de calculo dispersas. Este cambio se propone ahora para convertir el alcance del MVP ya priorizado en una base formal de especificacion que permita construir el producto con reglas claras de negocio y exportacion.
 
 ## What Changes
 
@@ -10,7 +10,7 @@ Los docentes necesitan una herramienta local que reduzca el trabajo manual de re
 - Incorporar definicion y edicion del programa evaluativo del curso, incluyendo creacion, actualizacion y eliminacion de instancias con validacion estricta de ponderaciones.
 - Incorporar registro de notas por estudiante e instancia evaluativa con recalculo de promedio general y ponderado.
 - Incorporar generacion de boletin individual en `PDF`, `HTML` y `JSON`, con advertencia previa cuando existan notas vacias.
-- Formalizar el MVP como aplicacion local con frontend y backend ejecutandose en `localhost`, persistencia local y soporte para pruebas funcionales, API y rendimiento.
+- Formalizar el MVP como aplicacion local con frontend y backend ejecutandose en `localhost`, persistencia local y una base tecnica clara para continuar el desarrollo.
 
 ## Capabilities
 
@@ -29,5 +29,5 @@ Ninguna. No existen capacidades base previas en `openspec/specs` para modificar 
 
 - Afecta la arquitectura base del producto, incluyendo frontend local, backend local, persistencia SQLite y contratos de API.
 - Introduce reglas de negocio centrales para autenticacion, cursos, estudiantes, programa evaluativo, notas y exportacion.
-- Define la base para automatizacion con `SerenityBDD + Cucumber`, `Karate` y `k6`.
+- Define el alcance tecnico y funcional minimo que debe quedar resuelto en esta iteracion de desarrollo.
 - Requiere crear nuevas specs en OpenSpec para cada capacidad declarada antes de pasar a diseno y tareas.

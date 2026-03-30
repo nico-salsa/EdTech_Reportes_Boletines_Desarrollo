@@ -1,4 +1,4 @@
-## Context
+ï»¿## Context
 
 EdTech se construira como una aplicacion local para docentes con frontend y backend ejecutandose en `localhost`, almacenamiento local en `SQLite` y exportacion de boletines individuales en `PDF`, `HTML` y `JSON`. El alcance del MVP cruza multiples modulos del sistema porque combina autenticacion, gestion de cursos, registro de estudiantes, programa evaluativo, libro de calificaciones y exportacion, por lo que conviene fijar decisiones de arquitectura y organizacion antes de implementar.
 
@@ -10,14 +10,15 @@ El repositorio alojara tanto el frontend como el backend. Para mantener orden y 
 - Definir una estructura de repositorio clara para desarrollo local del MVP.
 - Separar responsabilidades entre frontend, backend, documentacion y artefactos OpenSpec.
 - Establecer la base tecnica para implementar las historias `HDU_1`, `HDU_2`, `HDU_3`, `HDU_5`, `HDU_11`, `HDU_12`, `HDU_13`, `HDU_14` y `HDU_15`.
-- Facilitar automatizacion con `SerenityBDD + Cucumber`, `Karate` y `k6`.
+- Mantener una base de desarrollo ordenada, mantenible y alineada con buenas practicas.
 - Reutilizar una plantilla HTML como base comun para salida `HTML` y generacion de `PDF`.
 
 **Non-Goals:**
 - Empaquetar la aplicacion como binario de escritorio en esta etapa.
 - Implementar portal estudiantil, carga masiva u otras historias fuera del MVP.
-- Diseñar una arquitectura distribuida o con servicios separados por despliegue.
+- DiseÃ±ar una arquitectura distribuida o con servicios separados por despliegue.
 - Definir en este documento el detalle de cada endpoint o cada criterio funcional; eso corresponde a las specs.
+- Incluir automatizacion de QA como parte de este cambio de desarrollo.
 
 ## Decisions
 
@@ -46,7 +47,7 @@ El repositorio alojara tanto el frontend como el backend. Para mantener orden y 
 
 **Rationale:**
 - Es la opcion mas simple para iterar rapido en MVP.
-- Facilita pruebas funcionales automatizadas sobre flujos reales de UI.
+- Facilita iterar sobre flujos reales de UI sin agregar complejidad innecesaria.
 - Permite integrar la propuesta de Figma directamente en componentes React.
 
 **Alternativas consideradas:**
@@ -57,12 +58,12 @@ El repositorio alojara tanto el frontend como el backend. Para mantener orden y 
 **Decision:** El backend se implementara con `Java 21`, `Spring Boot`, `Spring Data JPA` y `SQLite`.
 
 **Rationale:**
-- Encaja bien con validaciones de negocio, automatizacion API y pruebas unitarias.
+- Encaja bien con validaciones de negocio y una estructura clara para un backend local.
 - SQLite elimina dependencia de infraestructura externa y es adecuada para una app local.
 - Spring Boot permite una estructura clara para autenticacion, cursos, estudiantes, programa y notas.
 
 **Alternativas consideradas:**
-- Node.js para backend: valido, pero menos alineado con el enfoque ya planteado de pruebas y estructura empresarial.
+- Node.js para backend: valido, pero menos alineado con el stack y la estructura ya planteados para el MVP.
 - Base embebida distinta a SQLite: innecesaria para el nivel de complejidad del MVP.
 
 ### 4. Modelo modular por dominios del MVP
@@ -120,15 +121,15 @@ El repositorio alojara tanto el frontend como el backend. Para mantener orden y 
 
 **Rationale:**
 - Son reglas nucleares del valor del producto.
-- Evitan rehacer modelo, validaciones y pruebas mas adelante.
+- Evitan rehacer modelo y validaciones mas adelante.
 
 ## Risks / Trade-offs
 
 - [Monorepo con dos stacks] -> Mitigacion: separar `frontend/` y `backend/` desde el inicio y documentar scripts por carpeta.
 - [Complejidad en exportacion PDF] -> Mitigacion: partir de una sola plantilla HTML simple y correcta, sin layout avanzado en MVP.
-- [Desalineacion entre Figma y estructura real] -> Mitigacion: reservar `frontend/` como destino unico del codigo visual y traducir el diseño a componentes reutilizables.
+- [Desalineacion entre Figma y estructura real] -> Mitigacion: reservar `frontend/` como destino unico del codigo visual y traducir el diseÃ±o a componentes reutilizables.
 - [Mayor alcance por cubrir varias historias nucleares] -> Mitigacion: mantener las reglas del MVP cerradas y posponer capacidades fuera del alcance confirmado.
-- [Pruebas funcionales inestables por UI cambiante] -> Mitigacion: usar IDs o selectores consistentes desde el inicio y priorizar estados de pantalla claros.
+- [Cambios frecuentes de UI durante la iteracion] -> Mitigacion: mantener componentes reutilizables, estados claros y contratos estables entre frontend y backend.
 
 ## Migration Plan
 
