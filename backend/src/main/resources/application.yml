@@ -2,7 +2,7 @@ spring:
   application:
     name: edtech-backend
   datasource:
-    url: jdbc:sqlite:./backend/data/edtech.db
+    url: jdbc:sqlite:./data/edtech.db
     driver-class-name: org.sqlite.JDBC
   jpa:
     database-platform: org.hibernate.community.dialect.SQLiteDialect

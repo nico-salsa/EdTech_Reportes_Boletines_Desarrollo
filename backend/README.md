@@ -16,10 +16,10 @@ API local del MVP de EdTech.
 Desde `backend/`:
 
 ```bash
-gradle bootRun
+./gradlew bootRun
 ```
 
-La configuracion local usa SQLite en `backend/data/edtech.db` y expone la API en `http://localhost:8080/api`.
+La configuracion local usa SQLite en `data/edtech.db` dentro de `backend/` y expone la API en `http://localhost:8080/api`.
 
 ## Referencias
 

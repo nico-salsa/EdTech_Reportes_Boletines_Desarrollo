@@ -14,13 +14,14 @@ Ubicacion: `backend/`
 Comando principal:
 
 ```bash
-gradle bootRun
+./gradlew bootRun
 ```
 
 Detalles:
 
 - Puerto por defecto: `8080`
-- Base de datos local: `backend/data/edtech.db`
+- Base de datos local: `backend/data/edtech.db` desde la raiz del repo
+- Si ejecutas desde `backend/`, la ruta efectiva es `data/edtech.db`
 - La API queda disponible en `http://localhost:8080/api`
 
 ## Frontend
@@ -49,7 +50,7 @@ Detalles:
 ## Flujo recomendado
 
 1. Crear o verificar la carpeta `backend/data/`
-2. Levantar el backend con `gradle bootRun`
+2. Entrar a `backend/` y levantar el backend con `./gradlew bootRun`
 3. Instalar dependencias del frontend con `pnpm install`
 4. Levantar el frontend con `pnpm dev`
 5. Abrir la aplicacion en `http://localhost:5173`
