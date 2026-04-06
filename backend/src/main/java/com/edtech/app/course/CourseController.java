@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -97,6 +98,15 @@ public class CourseController {
                 courseId,
                 new CourseService.GradeInput(request.studentId(), request.activityId(), request.grade())
         );
+    }
+
+    @DeleteMapping("/courses/{courseId}/activities/{activityId}")
+    public CourseService.CourseDetailResponse deleteActivity(
+            @RequestHeader("X-Session-Token") String token,
+            @PathVariable String courseId,
+            @PathVariable String activityId
+    ) {
+        return courseService.deleteActivity(authService.requireUser(token), courseId, activityId);
     }
 
     public record CreateCourseRequest(@NotBlank String name) {

@@ -261,8 +261,7 @@ public class CourseService {
 
         for (String existingId : existingIds) {
             if (!keptIds.contains(existingId)) {
-                jdbcTemplate.update("DELETE FROM student_grades WHERE course_id = ? AND activity_id = ?", course.id(), existingId);
-                jdbcTemplate.update("DELETE FROM evaluation_activities WHERE course_id = ? AND id = ?", course.id(), existingId);
+                deleteActivityRecords(course.id(), existingId);
             }
         }
 
@@ -309,6 +308,27 @@ public class CourseService {
             );
         }
 
+        return getCourse(teacher, course.id());
+    }
+
+    @Transactional
+    public CourseDetailResponse deleteActivity(AuthService.UserResponse teacher, String courseId, String activityId) {
+        CourseRecord course = loadOwnedCourse(teacher, courseId);
+        String normalizedActivityId = requireValue(activityId, "La actividad es obligatoria");
+        ensureActivityBelongsToCourse(course.id(), normalizedActivityId);
+
+        Integer totalActivities = jdbcTemplate.queryForObject(
+                "SELECT COUNT(*) FROM evaluation_activities WHERE course_id = ?",
+                Integer.class,
+                course.id()
+        );
+
+        if (totalActivities != null && totalActivities <= 1) {
+            throw new ApiException(HttpStatus.BAD_REQUEST, "Debe existir al menos una actividad evaluativa");
+        }
+
+        deleteActivityRecords(course.id(), normalizedActivityId);
+        reindexActivities(course.id());
         return getCourse(teacher, course.id());
     }
 
@@ -360,6 +380,30 @@ public class CourseService {
         );
         if (existing == null || existing == 0) {
             throw new ApiException(HttpStatus.NOT_FOUND, "La actividad evaluativa no existe en el curso");
+        }
+    }
+
+    private void deleteActivityRecords(String courseId, String activityId) {
+        jdbcTemplate.update("DELETE FROM student_grades WHERE course_id = ? AND activity_id = ?", courseId, activityId);
+        jdbcTemplate.update("DELETE FROM evaluation_activities WHERE course_id = ? AND id = ?", courseId, activityId);
+    }
+
+    private void reindexActivities(String courseId) {
+        List<String> remainingIds = jdbcTemplate.query(
+                "SELECT id FROM evaluation_activities WHERE course_id = ? ORDER BY position ASC, name ASC",
+                (rs, rowNum) -> rs.getString("id"),
+                courseId
+        );
+
+        int position = 0;
+        for (String remainingId : remainingIds) {
+            jdbcTemplate.update(
+                    "UPDATE evaluation_activities SET position = ? WHERE course_id = ? AND id = ?",
+                    position,
+                    courseId,
+                    remainingId
+            );
+            position++;
         }
     }
 
