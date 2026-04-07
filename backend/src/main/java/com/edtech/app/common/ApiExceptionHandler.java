@@ -3,6 +3,7 @@ package com.edtech.app.common;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -21,6 +22,16 @@ public class ApiExceptionHandler {
                 exception.getMessage(),
                 exception.getDetails()
         ));
+    }
+
+    @ExceptionHandler(MissingRequestHeaderException.class)
+    public ResponseEntity<Map<String, Object>> handleMissingHeader(MissingRequestHeaderException exception) {
+        if ("X-Session-Token".equals(exception.getHeaderName())) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(buildPayload(HttpStatus.UNAUTHORIZED, "Falta el token de sesion", Map.of()));
+        }
+        return ResponseEntity.badRequest()
+                .body(buildPayload(HttpStatus.BAD_REQUEST, "Falta el header requerido: " + exception.getHeaderName(), Map.of()));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
