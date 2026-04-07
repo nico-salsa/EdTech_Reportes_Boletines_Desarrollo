@@ -97,8 +97,13 @@ public class ReportService {
             GradeLine grade = payload.grades().get(index);
             builder.append("    {\n");
             builder.append("      \"activity\": \"").append(escape(grade.activity())).append("\",\n");
-            builder.append("      \"percentage\": ").append(grade.percentage()).append(",\n");
-            builder.append("      \"grade\": ").append(grade.grade() == null ? "null" : grade.grade()).append("\n");
+            builder.append("      \"percentage\": ").append(grade.percentage());
+            if (grade.grade() != null) {
+                builder.append(",\n");
+                builder.append("      \"grade\": ").append(grade.grade()).append("\n");
+            } else {
+                builder.append("\n");
+            }
             builder.append("    }");
             if (index < payload.grades().size() - 1) {
                 builder.append(",");
