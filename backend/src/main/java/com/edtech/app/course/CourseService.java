@@ -217,13 +217,31 @@ public class CourseService {
         CourseRecord course = loadOwnedCourse(teacher, courseId);
         validateActivities(activities);
 
-        List<String> keptIds = new ArrayList<>();
+        // Determine which existing IDs to keep (only those explicitly provided in the request)
+        List<String> incomingIds = activities.stream()
+                .filter(a -> a.id() != null && !a.id().isBlank())
+                .map(a -> a.id().trim())
+                .toList();
+
+        // Delete activities not in the incoming list FIRST (before inserting new ones)
+        List<String> existingIds = jdbcTemplate.query(
+                "SELECT id FROM evaluation_activities WHERE course_id = ?",
+                (rs, rowNum) -> rs.getString("id"),
+                course.id()
+        );
+        for (String existingId : existingIds) {
+            if (!incomingIds.contains(existingId)) {
+                deleteActivityRecords(course.id(), existingId);
+            }
+        }
+
+        // Upsert incoming activities
         int position = 0;
         for (ActivityInput activity : activities) {
             String activityId = activity.id() == null || activity.id().isBlank()
                     ? UUID.randomUUID().toString()
                     : activity.id().trim();
-            keptIds.add(activityId);
+
             Integer existing = jdbcTemplate.queryForObject(
                     "SELECT COUNT(*) FROM evaluation_activities WHERE id = ? AND course_id = ?",
                     Integer.class,
@@ -251,18 +269,6 @@ public class CourseService {
                 );
             }
             position++;
-        }
-
-        List<String> existingIds = jdbcTemplate.query(
-                "SELECT id FROM evaluation_activities WHERE course_id = ?",
-                (rs, rowNum) -> rs.getString("id"),
-                course.id()
-        );
-
-        for (String existingId : existingIds) {
-            if (!keptIds.contains(existingId)) {
-                deleteActivityRecords(course.id(), existingId);
-            }
         }
 
         return getCourse(teacher, course.id());
