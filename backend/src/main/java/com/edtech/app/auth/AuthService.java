@@ -102,7 +102,10 @@ public class AuthService {
     @Transactional
     public void logout(String token) {
         String normalizedToken = requireToken(token);
-        jdbcTemplate.update("DELETE FROM sessions WHERE token = ?", normalizedToken);
+        int deleted = jdbcTemplate.update("DELETE FROM sessions WHERE token = ?", normalizedToken);
+        if (deleted == 0) {
+            throw new ApiException(HttpStatus.UNAUTHORIZED, "Sesion invalida o expirada");
+        }
     }
 
     public UserResponse requireUser(String token) {
