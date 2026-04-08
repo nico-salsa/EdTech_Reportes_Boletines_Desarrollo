@@ -48,35 +48,39 @@
 | 19 | requireUser devuelve usuario autenticado | ✅ |
 | 20 | requireUser con token inválido lanza 401 | ✅ |
 
-### 1.2 CourseServiceTest (25 tests)
+### 1.2 CourseServiceTest (29 tests)
 
 | # | Caso de prueba | Resultado |
 |---|---------------|:---------:|
-| 1 | createCourse exitoso persiste curso con UUID | ✅ |
-| 2 | createCourse con nombre duplicado lanza 409 | ✅ |
-| 3 | createCourse con nombre nulo lanza 400 | ✅ |
+| 1 | listCourses retorna cursos del docente | ✅ |
+| 2 | listCourses retorna lista vacía cuando el docente no tiene cursos | ✅ |
+| 3 | createCourse con nombre duplicado lanza 409 | ✅ |
 | 4 | createCourse con nombre vacío lanza 400 | ✅ |
-| 5 | addStudentToCourse exitoso | ✅ |
-| 6 | addStudentToCourse con studentId vacío lanza 400 | ✅ |
-| 7 | addStudentToCourse con nombre vacío lanza 400 | ✅ |
-| 8 | addStudentToCourse con email inválido lanza 400 | ✅ |
-| 9 | addStudentToCourse con estudiante duplicado lanza 409 | ✅ |
-| 10 | updateActivities exitoso | ✅ |
-| 11 | updateActivities con lista vacía lanza 400 | ✅ |
-| 12 | updateActivities con porcentajes que no suman 100 lanza 400 | ✅ |
-| 13 | updateActivities con nombres duplicados (case-insensitive) lanza 400 | ✅ |
-| 14 | updateActivities con nombre de actividad vacío lanza 400 | ✅ |
-| 15 | updateActivities con porcentaje ≤ 0 lanza 400 | ✅ |
-| 16 | updateGrade exitoso | ✅ |
+| 5 | createCourse con nombre nulo lanza 400 | ✅ |
+| 6 | findStudentByIdentifier retorna estudiante cuando el identificador coincide | ✅ |
+| 7 | findStudentByIdentifier con ID inexistente lanza 404 | ✅ |
+| 8 | findStudentByIdentifier con identificador vacío lanza 400 | ✅ |
+| 9 | updateActivities con lista vacía lanza 400 | ✅ |
+| 10 | updateActivities con lista nula lanza 400 | ✅ |
+| 11 | updateActivities con nombres duplicados (case-insensitive) lanza 400 | ✅ |
+| 12 | updateActivities con porcentaje cero lanza 400 | ✅ |
+| 13 | updateActivities con porcentaje negativo lanza 400 | ✅ |
+| 14 | updateActivities con porcentaje nulo lanza 400 | ✅ |
+| 15 | updateActivities con porcentajes que no suman 100 lanza 400 | ✅ |
+| 16 | updateActivities con nombre de actividad vacío lanza 400 | ✅ |
 | 17 | updateGrade con nota negativa lanza 400 | ✅ |
-| 18 | updateGrade con nota null (borrado) exitoso | ✅ |
-| 19 | updateGrade con estudiante inexistente lanza 404 | ✅ |
-| 20 | updateGrade con actividad inexistente lanza 404 | ✅ |
-| 21 | deleteActivity exitoso | ✅ |
-| 22 | deleteActivity cuando es la última lanza 400 | ✅ |
-| 23 | loadOwnedCourse con curso inexistente lanza 404 | ✅ |
-| 24 | loadOwnedCourse con curso de otro docente lanza 403 | ✅ |
-| 25 | findStudentByIdentifier con ID inexistente lanza 404 | ✅ |
+| 18 | updateGrade con studentId vacío lanza 400 | ✅ |
+| 19 | updateGrade con activityId vacío lanza 400 | ✅ |
+| 20 | addStudentToCourse con email inválido lanza 400 | ✅ |
+| 21 | addStudentToCourse con nombre vacío lanza 400 | ✅ |
+| 22 | addStudentToCourse con identificador vacío lanza 400 | ✅ |
+| 23 | addStudentToCourse con estudiante duplicado lanza 409 | ✅ |
+| 24 | addStudentToCourse inscribe estudiante existente sin crear nuevo registro | ✅ |
+| 25 | deleteActivity cuando es la última lanza 400 | ✅ |
+| 26 | deleteActivity con actividad inexistente lanza 404 | ✅ |
+| 27 | deleteActivity con activityId vacío lanza 400 | ✅ |
+| 28 | loadOwnedCourse con curso inexistente lanza 404 | ✅ |
+| 29 | loadOwnedCourse con courseId vacío lanza 400 | ✅ |
 
 ### 1.3 ReportServiceTest (18 tests)
 
@@ -368,12 +372,18 @@ El `ApiExceptionHandler` maneja 4 tipos de excepción, pero no cubre `MissingSer
 
 | Commit | Mensaje | Tests |
 |--------|---------|:-----:|
-| `25f232c` | `test(auth): add unit tests for AuthService` | 20 |
-| `8151a90` | `test(course): add unit tests for CourseService` | 25 |
-| `b1d3091` | `test(report): add unit tests for ReportService` | 18 |
+| `25f232c` | `test(auth): add unit tests for AuthService (register, login, session, logout)` | 20 |
+| `8151a90` | `test(course): add unit tests for CourseService business logic validations` | 26 |
+| `b1d3091` | `test(report): add unit tests for ReportService (HTML, JSON, PDF generation)` | 18 |
 | `806650f` | `test(controllers): add MockMvc tests for Auth, Course, and Report controllers` | 31 |
 | `13a3fda` | `test(common): add unit tests for ApiExceptionHandler` | 8 |
 | `af4bfb3` | `test(frontend): add vitest infrastructure and 40 unit tests` | 40 |
+| `8ffdc2f` | `docs: add comprehensive test report with bugs and improvement opportunities` | — |
+| `08ef014` | `test(qa): assert expected behavior instead of current bugs` | — |
+| `8a6452d` | `test(backend): add CourseService listCourses and addStudent success-path tests` | +3 |
+| `71cb8e2` | `test(backend): add CourseController validation and error tests` | +5 |
+| `9387efd` | `test(frontend): add Register page tests` | +4 |
+| `38fc031` | `docs: update TEST_REPORT with new test additions` | — |
 
 ---
 
