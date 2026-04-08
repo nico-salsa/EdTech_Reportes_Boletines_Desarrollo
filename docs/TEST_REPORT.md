@@ -2,7 +2,7 @@
 
 **Fecha:** 8 de abril de 2026  
 **Rama:** `test/unit-tests`  
-**Autor:** Suite generada por asistente de testing  
+**Autor:** sstelmaj  
 **Stack:** Java 21 / Spring Boot 3.3.5 / React 18.3 / TypeScript / Vite 6
 
 ---
@@ -11,9 +11,13 @@
 
 | Ámbito   | Archivos de test | Tests | Pasados | Fallidos | Tasa |
 |----------|:-------:|:-----:|:-------:|:--------:|:----:|
-| Backend  | 7       | 103   | 103     | 0        | 100% |
+| Backend  | 7       | 103   | 101     | 2        | 98%  |
 | Frontend | 4       | 40    | 40      | 0        | 100% |
-| **Total**| **11**  | **143**| **143** | **0**    | **100%** |
+| **Total**| **11**  | **143**| **141** | **2**    | **98.6%** |
+
+> **Nota:** Los 2 tests fallidos son **intencionales** — documentan bugs reales
+> (BUG-001 y BUG-002). Los tests validan el **comportamiento esperado**, no el
+> comportamiento actual. Cuando los bugs se corrijan, los tests pasarán.
 
 ---
 
@@ -81,7 +85,7 @@
 | 1 | Exportar JSON genera estructura correcta | ✅ |
 | 2 | Exportar JSON incluye promedios calculados | ✅ |
 | 3 | Exportar JSON trata notas nulas como 0 | ✅ |
-| 4 | Exportar HTML genera tabla con actividades | ✅ |
+| 4 | Exportar HTML genera tabla con actividades y promedios con punto decimal | ❌ BUG-002 |
 | 5 | Exportar HTML muestra "Sin nota" para grades null | ✅ |
 | 6 | Exportar HTML incluye aviso de notas sin registrar | ✅ |
 | 7 | Exportar HTML incluye promedios | ✅ |
@@ -139,7 +143,7 @@
 | 2 | GET report?format=html → 200 con Content-Type text/html | ✅ |
 | 3 | GET report?format=json → 200 con Content-Type application/json | ✅ |
 | 4 | GET report sin token → 401 | ✅ |
-| 5 | GET report sin parámetro format → 500 ⚠️ (ver BUG-001) | ✅ |
+| 5 | GET report sin parámetro format → 400 Bad Request | ❌ BUG-001 |
 | 6 | GET report?format=xml (no soportado) → 400 | ✅ |
 | 7 | GET report con estudiante inexistente → 404 | ✅ |
 
@@ -234,7 +238,7 @@
 | **Comportamiento esperado** | Cuando falta el query parameter obligatorio `format`, la API debería retornar **HTTP 400 Bad Request** con un mensaje como `"Falta el parametro requerido: format"`. |
 | **Comportamiento actual** | Retorna **HTTP 500 Internal Server Error** con mensaje genérico `"Error interno del servidor"`. |
 | **Causa raíz** | Spring lanza `MissingServletRequestParameterException` cuando falta un `@RequestParam` obligatorio. Sin embargo, `ApiExceptionHandler` no tiene un `@ExceptionHandler` específico para esta excepción, por lo que es capturada por el handler genérico `handleUnexpectedException(Exception)` que retorna 500. |
-| **Archivo del test** | `ReportControllerTest.java` → test `shouldReturn500WithoutFormat()` |
+| **Archivo del test** | `ReportControllerTest.java` → test `shouldReturn400WithoutFormat()` (**falla intencionalmente**: el test valida el comportamiento esperado 400, pero el código actual retorna 500) |
 | **Solución propuesta** | Agregar un handler dedicado en `ApiExceptionHandler`: |
 
 ```java
@@ -257,7 +261,7 @@ public ResponseEntity<Map<String, Object>> handleMissingParam(MissingServletRequ
 | **Comportamiento esperado** | Los promedios en el HTML del boletín deben mostrarse con punto decimal: `"80.00"`. |
 | **Comportamiento actual** | En JVMs con locale `es_UY`, `es_ES`, `fr_FR`, etc., se muestra `"80,00"` (con coma). Las notas individuales y porcentajes de actividades sí usan `Locale.US` (líneas 128-129), pero los promedios general y ponderado usan `String.formatted()` (línea 187) que hereda el locale del JVM. |
 | **Causa raíz** | `String.formatted("%.2f", ...)` delega a `String.format(Locale.getDefault(), ...)`. El formato de número depende del locale de la máquina. Las líneas 128-129 usan `String.format(Locale.US, ...)` correctamente, pero el text block del template (líneas 179-180 con `%.2f`) se formatea con `""".formatted(...)` sin locale explícito. |
-| **Archivo del test** | `ReportServiceTest.java` → test de promedio en HTML (assertion adaptada con `containsAnyOf("80.00", "80,00")`) |
+| **Archivo del test** | `ReportServiceTest.java` → test de promedio en HTML (**falla intencionalmente** en locales con coma: el test valida el formato esperado `"80.00"` con punto decimal) |
 | **Solución propuesta** | Reemplazar `""".formatted(...)` por `String.format(Locale.US, template, ...)`: |
 
 ```java

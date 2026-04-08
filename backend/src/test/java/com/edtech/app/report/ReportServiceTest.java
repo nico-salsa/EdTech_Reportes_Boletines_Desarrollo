@@ -225,8 +225,10 @@ class ReportServiceTest {
             assertThat(html).contains("90.00");
 
             // Averages: simple = (70+90)/2 = 80, weighted = (70*50 + 90*50)/100 = 80
-            // renderHtml uses %.2f with default locale — check for both possible formats
-            assertThat(html).containsAnyOf("80.00", "80,00");
+            // BUG-002: renderHtml uses String.formatted("%.2f") which inherits JVM locale.
+            // Expected behavior: always use dot decimal separator for consistency.
+            // This test will fail on es_* locales until the bug is fixed.
+            assertThat(html).contains("80.00");
         }
 
         @Test

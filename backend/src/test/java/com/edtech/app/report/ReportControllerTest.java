@@ -108,17 +108,17 @@ class ReportControllerTest {
         }
 
         @Test
-        @DisplayName("should return 500 when format param is absent (handler gap — see refactoring note)")
-        void shouldReturn500WithoutFormat() throws Exception {
+        @DisplayName("should return 400 when format param is absent [BUG-001: currently returns 500]")
+        void shouldReturn400WithoutFormat() throws Exception {
             stubAuth();
 
-            // NOTE: Spring throws MissingServletRequestParameterException for absent
-            // @RequestParam, which would normally be 400. However, ApiExceptionHandler's
-            // generic Exception handler catches it first and returns 500.
-            // Recommendation: add a dedicated handler for MissingServletRequestParameterException.
+            // BUG-001: Missing @RequestParam should yield 400 Bad Request.
+            // Currently returns 500 because ApiExceptionHandler lacks a handler
+            // for MissingServletRequestParameterException. This test documents
+            // the EXPECTED behavior — it will pass once the handler is added.
             mockMvc.perform(get("/api/courses/c-1/students/s-1/report")
                             .header("X-Session-Token", "valid-token"))
-                    .andExpect(status().isInternalServerError());
+                    .andExpect(status().isBadRequest());
         }
 
         @Test
