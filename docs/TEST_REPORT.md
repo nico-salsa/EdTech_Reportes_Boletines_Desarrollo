@@ -11,9 +11,9 @@
 
 | Ámbito   | Archivos de test | Tests | Pasados | Fallidos | Tasa |
 |----------|:-------:|:-----:|:-------:|:--------:|:----:|
-| Backend  | 7       | 103   | 101     | 2        | 98%  |
-| Frontend | 4       | 40    | 40      | 0        | 100% |
-| **Total**| **11**  | **143**| **141** | **2**    | **98.6%** |
+| Backend  | 7       | 111   | 109     | 2        | 98%  |
+| Frontend | 5       | 44    | 44      | 0        | 100% |
+| **Total**| **12**  | **155**| **153** | **2**    | **98.7%** |
 
 > **Nota:** Los 2 tests fallidos son **intencionales** — documentan bugs reales
 > (BUG-001 y BUG-002). Los tests validan el **comportamiento esperado**, no el
@@ -117,7 +117,7 @@
 | 10 | POST /api/auth/logout → 204 | ✅ |
 | 11 | POST /api/auth/logout con token inválido → 401 | ✅ |
 
-### 1.5 CourseControllerTest (13 tests)
+### 1.5 CourseControllerTest (18 tests)
 
 | # | Caso de prueba | Resultado |
 |---|---------------|:---------:|
@@ -128,12 +128,17 @@
 | 5 | GET /api/courses/{id} → 200 detalle | ✅ |
 | 6 | GET /api/courses/{id} inexistente → 404 | ✅ |
 | 7 | GET /api/students/{id} → 200 estudiante encontrado | ✅ |
-| 8 | POST /api/courses/{id}/students → 200 | ✅ |
-| 9 | POST /api/courses/{id}/students con studentId vacío → 400 | ✅ |
-| 10 | PUT /api/courses/{id}/activities → 200 | ✅ |
-| 11 | PUT /api/courses/{id}/grades → 200 | ✅ |
-| 12 | DELETE /api/courses/{id}/activities/{actId} → 200 | ✅ |
-| 13 | DELETE última actividad → 400 con mensaje explicativo | ✅ |
+| 8 | GET /api/students/{id} inexistente → 404 | ✅ |
+| 9 | POST /api/courses/{id}/students → 200 | ✅ |
+| 10 | POST /api/courses/{id}/students con studentId vacío → 400 | ✅ |
+| 11 | POST /api/courses/{id}/students con nombre vacío → 400 | ✅ |
+| 12 | POST /api/courses/{id}/students con email vacío → 400 | ✅ |
+| 13 | PUT /api/courses/{id}/activities → 200 | ✅ |
+| 14 | PUT /api/courses/{id}/grades → 200 | ✅ |
+| 15 | PUT /api/courses/{id}/grades con studentId vacío → 400 | ✅ |
+| 16 | PUT /api/courses/{id}/grades con activityId vacío → 400 | ✅ |
+| 17 | DELETE /api/courses/{id}/activities/{actId} → 200 | ✅ |
+| 18 | DELETE última actividad → 400 con mensaje explicativo | ✅ |
 
 ### 1.6 ReportControllerTest (7 tests)
 
@@ -223,6 +228,15 @@
 | 1 | Renderiza children cuando está autenticado | ✅ |
 | 2 | Redirige a /login cuando no está autenticado | ✅ |
 | 3 | No renderiza nada mientras isLoading es true | ✅ |
+
+### 2.5 Register.test.tsx (4 tests)
+
+| # | Caso de prueba | Resultado |
+|---|---------------|:---------:|
+| 1 | Muestra error cuando username está vacío | ✅ |
+| 2 | Muestra error cuando las contraseñas no coinciden | ✅ |
+| 3 | Registro exitoso muestra mensaje y navega a /dashboard | ✅ |
+| 4 | Click en "Inicia sesión" navega a /login | ✅ |
 
 ---
 
