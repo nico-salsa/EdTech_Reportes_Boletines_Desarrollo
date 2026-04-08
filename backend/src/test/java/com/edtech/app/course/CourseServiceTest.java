@@ -77,6 +77,57 @@ class CourseServiceTest {
         )).thenReturn(List.of());
     }
 
+    // ─── LIST COURSES ───────────────────────────────────────────────────────────
+
+    @Nested
+    @DisplayName("listCourses()")
+    class ListCourses {
+
+        @Test
+        @DisplayName("should return courses for the teacher")
+        @SuppressWarnings("unchecked")
+        void shouldReturnCoursesForTeacher() {
+            when(jdbcTemplate.query(
+                    anyString(),
+                    any(RowMapper.class),
+                    eq("teacher-1")
+            )).thenAnswer(invocation -> {
+                RowMapper<?> mapper = invocation.getArgument(1);
+                var rs = org.mockito.Mockito.mock(java.sql.ResultSet.class);
+                when(rs.getString("id")).thenReturn("c-1");
+                when(rs.getString("name")).thenReturn("Matematicas");
+                when(rs.getString("teacher_id")).thenReturn("teacher-1");
+                when(rs.getInt("total_students")).thenReturn(5);
+                when(rs.getInt("total_activities")).thenReturn(3);
+                when(rs.getString("created_at")).thenReturn("2026-01-01");
+                return List.of(mapper.mapRow(rs, 0));
+            });
+
+            List<CourseService.CourseListItem> result = courseService.listCourses(TEACHER);
+
+            assertThat(result).hasSize(1);
+            assertThat(result.getFirst().id()).isEqualTo("c-1");
+            assertThat(result.getFirst().name()).isEqualTo("Matematicas");
+            assertThat(result.getFirst().studentCount()).isEqualTo(5);
+            assertThat(result.getFirst().activityCount()).isEqualTo(3);
+        }
+
+        @Test
+        @DisplayName("should return empty list when teacher has no courses")
+        @SuppressWarnings("unchecked")
+        void shouldReturnEmptyListWhenNoCourses() {
+            when(jdbcTemplate.query(
+                    anyString(),
+                    any(RowMapper.class),
+                    eq("teacher-1")
+            )).thenReturn(List.of());
+
+            List<CourseService.CourseListItem> result = courseService.listCourses(TEACHER);
+
+            assertThat(result).isEmpty();
+        }
+    }
+
     // ─── CREATE COURSE ──────────────────────────────────────────────────────────
 
     @Nested
@@ -462,6 +513,63 @@ class CourseServiceTest {
                         assertThat(((ApiException) ex).getStatus()).isEqualTo(HttpStatus.CONFLICT);
                         assertThat(ex.getMessage()).contains("ya esta inscrito");
                     });
+        }
+    }
+
+    // ─── ADD STUDENT SUCCESS PATH ───────────────────────────────────────────────
+
+    @Nested
+    @DisplayName("addStudentToCourse() – existing student")
+    class AddStudentSuccess {
+
+        @Test
+        @DisplayName("should enroll existing student without creating a new record")
+        @SuppressWarnings("unchecked")
+        void shouldEnrollExistingStudentWithoutInsertingNewRecord() {
+            stubOwnedCourse("course-1", "teacher-1");
+
+            // Student already exists in the students table
+            when(jdbcTemplate.query(
+                    eq("SELECT id, student_identifier, full_name, email FROM students WHERE student_identifier = ?"),
+                    any(RowMapper.class),
+                    eq("STU-001")
+            )).thenAnswer(invocation -> {
+                RowMapper<?> mapper = invocation.getArgument(1);
+                var rs = org.mockito.Mockito.mock(java.sql.ResultSet.class);
+                when(rs.getString("id")).thenReturn("s-uuid-1");
+                when(rs.getString("student_identifier")).thenReturn("STU-001");
+                when(rs.getString("full_name")).thenReturn("Juan Perez");
+                when(rs.getString("email")).thenReturn("juan@mail.com");
+                return List.of(mapper.mapRow(rs, 0));
+            });
+
+            // Not yet enrolled in this course
+            when(jdbcTemplate.queryForObject(
+                    eq("SELECT COUNT(*) FROM course_students WHERE course_id = ? AND student_id = ?"),
+                    eq(Integer.class),
+                    eq("course-1"),
+                    eq("s-uuid-1")
+            )).thenReturn(0);
+
+            CourseService.AddStudentRequest request = new CourseService.AddStudentRequest(
+                    "STU-001", "Juan Perez", "juan@mail.com"
+            );
+
+            CourseService.CourseDetailResponse result = courseService.addStudentToCourse(TEACHER, "course-1", request);
+
+            assertThat(result).isNotNull();
+
+            // Should NOT insert a new student record — student already exists
+            verify(jdbcTemplate, never()).update(
+                    eq("INSERT INTO students(id, student_identifier, full_name, email, created_at) VALUES (?, ?, ?, ?, ?)"),
+                    anyString(), anyString(), anyString(), anyString(), anyString()
+            );
+
+            // Should insert enrollment record
+            verify(jdbcTemplate).update(
+                    eq("INSERT INTO course_students(id, course_id, student_id, created_at) VALUES (?, ?, ?, ?)"),
+                    anyString(), eq("course-1"), eq("s-uuid-1"), anyString()
+            );
         }
     }
 
