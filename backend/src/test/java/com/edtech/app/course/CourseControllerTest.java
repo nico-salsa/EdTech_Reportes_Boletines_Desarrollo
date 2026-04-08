@@ -174,6 +174,19 @@ class CourseControllerTest {
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.name").value("Juan Perez"));
         }
+
+        @Test
+        @DisplayName("should return 404 when student does not exist")
+        void shouldReturn404WhenStudentNotFound() throws Exception {
+            stubAuth();
+            when(courseService.findStudentByIdentifier("UNKNOWN"))
+                    .thenThrow(new ApiException(HttpStatus.NOT_FOUND, "Estudiante no encontrado"));
+
+            mockMvc.perform(get("/api/students/UNKNOWN")
+                            .header("X-Session-Token", "valid-token"))
+                    .andExpect(status().isNotFound())
+                    .andExpect(jsonPath("$.message").value("Estudiante no encontrado"));
+        }
     }
 
     // ─── ADD STUDENT TO COURSE ──────────────────────────────────────────────────
@@ -205,6 +218,30 @@ class CourseControllerTest {
                             .header("X-Session-Token", "valid-token")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content("{\"studentId\":\"\",\"name\":\"Juan\",\"email\":\"j@m.com\"}"))
+                    .andExpect(status().isBadRequest());
+        }
+
+        @Test
+        @DisplayName("should return 400 when student name is blank")
+        void shouldRejectBlankName() throws Exception {
+            stubAuth();
+
+            mockMvc.perform(post("/api/courses/c-1/students")
+                            .header("X-Session-Token", "valid-token")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content("{\"studentId\":\"STU-001\",\"name\":\"\",\"email\":\"j@m.com\"}"))
+                    .andExpect(status().isBadRequest());
+        }
+
+        @Test
+        @DisplayName("should return 400 when student email is blank")
+        void shouldRejectBlankEmail() throws Exception {
+            stubAuth();
+
+            mockMvc.perform(post("/api/courses/c-1/students")
+                            .header("X-Session-Token", "valid-token")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content("{\"studentId\":\"STU-001\",\"name\":\"Juan\",\"email\":\"\"}"))
                     .andExpect(status().isBadRequest());
         }
     }
@@ -248,6 +285,30 @@ class CourseControllerTest {
                             .contentType(MediaType.APPLICATION_JSON)
                             .content("{\"studentId\":\"STU-001\",\"activityId\":\"act-1\",\"grade\":85}"))
                     .andExpect(status().isOk());
+        }
+
+        @Test
+        @DisplayName("should return 400 when studentId is blank")
+        void shouldRejectBlankStudentId() throws Exception {
+            stubAuth();
+
+            mockMvc.perform(put("/api/courses/c-1/grades")
+                            .header("X-Session-Token", "valid-token")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content("{\"studentId\":\"\",\"activityId\":\"act-1\",\"grade\":85}"))
+                    .andExpect(status().isBadRequest());
+        }
+
+        @Test
+        @DisplayName("should return 400 when activityId is blank")
+        void shouldRejectBlankActivityId() throws Exception {
+            stubAuth();
+
+            mockMvc.perform(put("/api/courses/c-1/grades")
+                            .header("X-Session-Token", "valid-token")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content("{\"studentId\":\"STU-001\",\"activityId\":\"\",\"grade\":85}"))
+                    .andExpect(status().isBadRequest());
         }
     }
 
