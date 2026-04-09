@@ -18,6 +18,10 @@ The system MUST include the minimum academic content needed for a simple but cor
 - **WHEN** the system generates an individual student report
 - **THEN** the report MUST contain the teacher's course context, the student's identification, the evaluation instances, the recorded grades, and the student's final averages for that course
 
+#### Scenario: Empty grades stay visible in the exported report while affecting averages as zero
+- **WHEN** the system generates a report for a student that still has one or more empty grades
+- **THEN** the exported content keeps those grades visually identifiable as empty and MUST calculate the report averages using `0` for those missing grade values
+
 ### Requirement: Export warns before generating reports with incomplete grading data
 The system MUST warn the teacher before generating a report when the selected student has at least one empty grade.
 

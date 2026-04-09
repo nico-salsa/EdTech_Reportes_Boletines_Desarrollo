@@ -6,9 +6,9 @@
 
 ## 2. Functional Contract Alignment
 
-- [ ] 2.1 Revisar y ajustar `user-auth` contra la implementacion real de registro, login, sesion y logout
-- [ ] 2.2 Revisar y ajustar `course-management` y `evaluation-program` contra los endpoints y validaciones actuales
-- [ ] 2.3 Revisar y ajustar `gradebook` y `student-report-export` contra los calculos, advertencias y formatos soportados
+- [x] 2.1 Revisar y ajustar `user-auth` contra la implementacion real de registro, login, sesion y logout
+- [x] 2.2 Revisar y ajustar `course-management` y `evaluation-program` contra los endpoints y validaciones actuales
+- [x] 2.3 Revisar y ajustar `gradebook` y `student-report-export` contra los calculos, advertencias y formatos soportados
 
 ## 3. Architecture Cleanup
 
