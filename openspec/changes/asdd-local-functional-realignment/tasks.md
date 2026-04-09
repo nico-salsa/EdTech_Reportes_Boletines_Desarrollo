@@ -13,14 +13,14 @@
 ## 3. Architecture Cleanup
 
 - [ ] 3.1 Resolver inconsistencias criticas del backend que impiden una linea base estable
-- [ ] 3.2 Documentar la direccion arquitectonica real y registrar deuda tecnica visible del modelo de persistencia
+- [x] 3.2 Documentar la direccion arquitectonica real y registrar deuda tecnica visible del modelo de persistencia
 - [ ] 3.3 Eliminar o dejar explicitamente acotados los artefactos estructurales que hoy generan confusion sin aportar al runtime
 
 ## 4. Engineering Governance
 
 - [x] 4.1 Actualizar `README.md`, `backend/README.md` y la guia de ejecucion local para que reflejen el estado actual del repositorio
-- [ ] 4.2 Crear `AI_WORKFLOW.md`, `docs/ARCHITECTURE.md` y un set minimo de ADRs o decisiones persistentes alineadas con el cambio
-- [ ] 4.3 Crear `docs/TRACEABILITY_MATRIX.md` y `docs/REALITY_CHECK.md` enlazando alcance, implementacion, evidencias y brechas
+- [x] 4.2 Crear `AI_WORKFLOW.md`, `docs/ARCHITECTURE.md` y un set minimo de ADRs o decisiones persistentes alineadas con el cambio
+- [x] 4.3 Crear `docs/TRACEABILITY_MATRIX.md` y `docs/REALITY_CHECK.md` enlazando alcance, implementacion, evidencias y brechas
 
 ## 5. Quality Gates
 
@@ -30,8 +30,8 @@
 
 ## 6. NFR and Delivery Evidence
 
-- [ ] 6.1 Crear `docs/NFRS.md` con criterios y evidencia minima de portabilidad, seguridad basica, observabilidad y mantenibilidad
-- [ ] 6.2 Registrar la evidencia real de ejecucion de pruebas y riesgos residuales del MVP
+- [x] 6.1 Crear `docs/NFRS.md` con criterios y evidencia minima de portabilidad, seguridad basica, observabilidad y mantenibilidad
+- [x] 6.2 Registrar la evidencia real de ejecucion de pruebas y riesgos residuales del MVP
 - [ ] 6.3 Alinear la documentacion de entrega con el estado real del cambio antes del cierre
 
 ## 7. Final Validation
