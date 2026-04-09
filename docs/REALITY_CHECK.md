@@ -42,7 +42,7 @@ Registrar la diferencia entre la situacion esperada del repositorio y la realida
 ## 1. ¿Qué tareas subestimamos y por qué?
 
 - **Problemas de entorno/locale:** El formateo de promedios en el boletín HTML dependía del locale de la JVM. En entornos con locale `es_UY/es_ES` los decimales usaban coma en vez de punto (BUG-002). Se subestimó la variabilidad de entorno.
-- **Ambos bugs fueron detectados por QA**, no en desarrollo. Esto evidencia que faltó cobertura de edge cases en la fase de codificación.
+- **Los bugs fueron detectados por QA**, no en desarrollo. Esto evidencia que faltó cobertura de edge cases en la fase de codificación.
 - **Esfuerzo de pruebas para la API:** Se subestimó el esfuerzo necesario para realizar las pruebas automatizadas con KARATE de forma que cubran robustamente la API del MVP 
 
 ---
