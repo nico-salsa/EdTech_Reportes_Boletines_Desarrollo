@@ -14,7 +14,13 @@ Ubicacion: `backend/`
 Comando principal:
 
 ```bash
-./gradlew bootRun
+.\gradlew.bat bootRun
+```
+
+Validacion minima:
+
+```bash
+.\gradlew.bat test
 ```
 
 Detalles:
@@ -23,6 +29,7 @@ Detalles:
 - Base de datos local: `backend/data/edtech.db` desde la raiz del repo
 - Si ejecutas desde `backend/`, la ruta efectiva es `data/edtech.db`
 - La API queda disponible en `http://localhost:8080/api`
+- Verificacion funcional minima: `GET /api/auth/session` sin token debe responder `401 Unauthorized`
 
 ## Frontend
 
@@ -63,5 +70,5 @@ Detalles:
 
 ## Pendientes tecnicos conocidos
 
-- Ejecutar validaciones completas de compilacion en cada nueva iteracion relevante
-- Mantener alineados los contratos entre frontend y backend cuando siga el desarrollo
+- Crear CI para automatizar estas validaciones
+- Incorporar suites de prueba ejecutables para los flujos criticos del MVP

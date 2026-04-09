@@ -66,16 +66,6 @@ public class ApiExceptionHandler {
         return payload;
     }
 
-    @ExceptionHandler(MissingRequestHeaderException.class)
-    public ResponseEntity<Map<String, Object>> handleMissingHeader(MissingRequestHeaderException exception) {
-        if ("X-Session-Token".equals(exception.getHeaderName())) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(buildPayload(HttpStatus.UNAUTHORIZED, "Falta el token de sesion", Map.of()));
-        }
-        return ResponseEntity.badRequest()
-                .body(buildPayload(HttpStatus.BAD_REQUEST, "Falta el header requerido: " + exception.getHeaderName(), Map.of()));
-    }
-
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<Map<String, Object>> handleMessageNotReadable(HttpMessageNotReadableException exception) {
         return ResponseEntity.badRequest()

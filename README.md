@@ -40,12 +40,13 @@ Historias incluidas:
 - Mantener separacion clara entre `frontend/` y `backend/`
 - Evitar code smells evidentes y respetar responsabilidades por modulo
 - Mantener contratos de API claros y consistentes con la UI
-- La automatizacion de QA se maneja en un frente aparte y no hace parte de este cambio de desarrollo
+- Validar como minimo el backend con `.\gradlew.bat test` y el frontend con `pnpm --dir frontend build`
 
 ## Artefactos de contexto
 
 - Decisiones tecnicas persistentes: `docs/DECISIONES_TECNICAS_MVP.md`
-- Cambio OpenSpec activo: `openspec/changes/local-mvp-docente-boletines/`
+- Cambio OpenSpec activo: `openspec/changes/asdd-local-functional-realignment/`
+- Guia de ejecucion local: `docs/EJECUCION_LOCAL.md`
 
 ## Notas de repositorio
 
