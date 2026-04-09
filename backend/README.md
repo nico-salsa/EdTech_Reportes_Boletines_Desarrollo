@@ -26,10 +26,10 @@ La configuracion local usa SQLite en `data/edtech.db` dentro de `backend/` y exp
 Desde `backend/`:
 
 ```bash
-.\gradlew.bat test
+.\gradlew.bat check
 ```
 
-Esta validacion deja la linea base de compilacion del backend en verde.
+Esta validacion deja la linea base de compilacion del backend en verde, ejecuta la suite automatizada y exige cobertura JaCoCo minima del `80%`.
 
 ## Referencias
 

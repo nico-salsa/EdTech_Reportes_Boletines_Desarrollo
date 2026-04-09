@@ -20,7 +20,7 @@ Comando principal:
 Validacion minima:
 
 ```bash
-.\gradlew.bat test
+.\gradlew.bat check
 ```
 
 Detalles:
@@ -30,6 +30,7 @@ Detalles:
 - Si ejecutas desde `backend/`, la ruta efectiva es `data/edtech.db`
 - La API queda disponible en `http://localhost:8080/api`
 - Verificacion funcional minima: `GET /api/auth/session` sin token debe responder `401 Unauthorized`
+- El comando `check` tambien exige cobertura minima del `80%` sobre las lineas del backend y genera reporte HTML en `backend/build/reports/jacoco/test/html/index.html`
 
 ## Frontend
 
@@ -70,5 +71,5 @@ Detalles:
 
 ## Pendientes tecnicos conocidos
 
-- Crear CI para automatizar estas validaciones
-- Incorporar suites de prueba ejecutables para los flujos criticos del MVP
+- Incorporar pruebas automatizadas del frontend para extender la cobertura mas alla del backend
+- Publicar contratos API formales para complementar los quality gates actuales

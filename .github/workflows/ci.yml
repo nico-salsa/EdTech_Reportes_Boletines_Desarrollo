@@ -35,9 +35,9 @@ jobs:
       - name: Validate OpenSpec change
         run: openspec validate asdd-local-functional-realignment
 
-      - name: Validate backend
+      - name: Validate backend and coverage
         working-directory: backend
-        run: chmod +x ./gradlew && ./gradlew test
+        run: chmod +x ./gradlew && ./gradlew check
 
       - name: Install frontend dependencies
         working-directory: frontend

@@ -40,7 +40,8 @@ Historias incluidas:
 - Mantener separacion clara entre `frontend/` y `backend/`
 - Evitar code smells evidentes y respetar responsabilidades por modulo
 - Mantener contratos de API claros y consistentes con la UI
-- Validar como minimo el backend con `.\gradlew.bat test` y el frontend con `pnpm --dir frontend build`
+- Validar como minimo el backend con `.\gradlew.bat check` y el frontend con `pnpm --dir frontend build`
+- Mantener cobertura automatizada minima del `80%` en lineas del backend; el reporte local queda en `backend/build/reports/jacoco/test/html/index.html`
 
 ## Artefactos de contexto
 
