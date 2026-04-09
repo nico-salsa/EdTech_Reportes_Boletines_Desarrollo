@@ -41,6 +41,7 @@ Historias incluidas:
 - Evitar code smells evidentes y respetar responsabilidades por modulo
 - Mantener contratos de API claros y consistentes con la UI
 - Validar como minimo el backend con `.\gradlew.bat check` y el frontend con `pnpm --dir frontend build`
+- El pipeline de integracion valida `OpenSpec`, el build del frontend y `.\gradlew.bat build` en backend para asegurar que tambien se construya el artefacto Java
 - Mantener cobertura automatizada minima del `80%` en lineas del backend; el reporte local queda en `backend/build/reports/jacoco/test/html/index.html`
 
 ## Ejecucion local
@@ -65,11 +66,18 @@ Validacion recomendada:
 .\gradlew.bat check
 ```
 
+Validacion equivalente al pipeline de integracion:
+
+```powershell
+.\gradlew.bat build
+```
+
 Detalles:
 
 - API disponible en `http://localhost:8080/api`
 - Base de datos local en `backend/data/edtech.db`
 - `check` compila, ejecuta pruebas y exige al menos `80%` de cobertura del backend
+- `build` hace lo anterior y ademas verifica que el backend se construya correctamente como artefacto Gradle
 
 ### Levantar frontend
 

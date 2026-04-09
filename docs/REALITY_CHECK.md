@@ -28,7 +28,8 @@ Registrar la diferencia entre la situacion esperada del repositorio y la realida
 - Se actualizaron las guias operativas base del repositorio.
 - Se creo el paquete minimo de gobierno tecnico y trazabilidad.
 - Se agrego una suite automatizada de backend con cobertura de lineas >= `80%` y un workflow CI versionado.
-- Se separo la automatizacion entre integracion por PR contra `main` y empaquetado de despliegue al hacer `push` a `main`.
+- Se dejo un workflow de integracion por PR contra `main`, separado por jobs para OpenSpec, frontend y backend.
+- El gate de backend ahora usa `build` para verificar no solo pruebas y cobertura, sino tambien la construccion real del artefacto Gradle.
 - Se elimino del backend el andamiaje JPA y los modulos vacios que no participaban del runtime real.
 
 ## Brechas que siguen abiertas

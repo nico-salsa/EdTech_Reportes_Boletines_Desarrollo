@@ -1,7 +1,7 @@
 # Merge Checklist
 
 - [ ] El cambio OpenSpec activo valida correctamente.
-- [ ] `backend` pasa `.\gradlew.bat check`.
+- [ ] `backend` pasa `.\gradlew.bat build`.
 - [ ] La cobertura automatizada del backend es >= `80%` y el reporte JaCoCo queda disponible en `backend/build/reports/jacoco/test/html/index.html`.
 - [ ] `frontend` pasa `pnpm --dir frontend build`.
 - [ ] La documentacion operativa refleja el estado real del repositorio.

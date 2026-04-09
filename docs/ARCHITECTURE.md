@@ -36,6 +36,7 @@ Backend Spring Boot
 ## Decisiones vigentes
 
 - La aplicacion sigue siendo local; no hay despliegue distribuido.
+- Solo se versiona pipeline de integracion; no existe pipeline de despliegue porque el proyecto no entrega a un entorno remoto.
 - La sesion es simple y basada en token local enviado por `X-Session-Token`.
 - La exportacion soporta `PDF`, `HTML` y `JSON`.
 - El backend prioriza estabilidad del MVP sobre una reescritura profunda.

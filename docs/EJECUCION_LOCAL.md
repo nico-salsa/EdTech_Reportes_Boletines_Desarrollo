@@ -23,6 +23,12 @@ Validacion minima:
 .\gradlew.bat check
 ```
 
+Validacion equivalente al pipeline de integracion:
+
+```bash
+.\gradlew.bat build
+```
+
 Detalles:
 
 - Puerto por defecto: `8080`
@@ -31,6 +37,7 @@ Detalles:
 - La API queda disponible en `http://localhost:8080/api`
 - Verificacion funcional minima: `GET /api/auth/session` sin token debe responder `401 Unauthorized`
 - El comando `check` tambien exige cobertura minima del `80%` sobre las lineas del backend y genera reporte HTML en `backend/build/reports/jacoco/test/html/index.html`
+- El comando `build` ejecuta la validacion anterior y ademas confirma que el backend se construye como artefacto Gradle
 
 ## Frontend
 
