@@ -3,6 +3,7 @@ SUBTASKS.md
 USER_STORIES.md
 .codex/
 .codex-tmp/
+.vscode/
 .github/*
 !.github/workflows/
 !.github/workflows/**
@@ -12,5 +13,6 @@ frontend/dist/
 frontend/.env.local
 backend/.gradle/
 backend/build/
+backend/bin/
 backend/data/*.db
 backend/.gradle-user-home/
