@@ -27,11 +27,10 @@ Registrar la diferencia entre la situacion esperada del repositorio y la realida
 - Se creo el cambio `asdd-local-functional-realignment` con proposal, design, specs y tasks.
 - Se actualizaron las guias operativas base del repositorio.
 - Se creo el paquete minimo de gobierno tecnico y trazabilidad.
+- Se agrego una suite smoke minima de backend y un workflow CI versionado.
 
 ## Brechas que siguen abiertas
 
-- Aun no hay CI versionado en `.github/workflows/`.
-- Aun no hay pruebas automatizadas significativas del MVP en el repo.
+- La suite automatizada aun es minima y no cubre de punta a punta programa evaluativo, libro de notas y exportacion.
 - Sigue existiendo deuda tecnica por mezcla de enfoques de persistencia y artefactos estructurales no usados.
 - Falta cerrar la documentacion de entrega final y la evidencia automatizada de quality gates.
-

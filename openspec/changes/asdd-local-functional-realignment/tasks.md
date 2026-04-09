@@ -24,15 +24,15 @@
 
 ## 5. Quality Gates
 
-- [ ] 5.1 Incorporar validaciones automatizadas minimas para backend, frontend y artefactos OpenSpec
-- [ ] 5.2 Crear o actualizar suites de prueba y smoke checks para los flujos criticos del MVP
-- [ ] 5.3 Crear un workflow CI y checklist de merge compatibles con la linea base local del proyecto
+- [x] 5.1 Incorporar validaciones automatizadas minimas para backend, frontend y artefactos OpenSpec
+- [x] 5.2 Crear o actualizar suites de prueba y smoke checks para los flujos criticos del MVP
+- [x] 5.3 Crear un workflow CI y checklist de merge compatibles con la linea base local del proyecto
 
 ## 6. NFR and Delivery Evidence
 
 - [x] 6.1 Crear `docs/NFRS.md` con criterios y evidencia minima de portabilidad, seguridad basica, observabilidad y mantenibilidad
 - [x] 6.2 Registrar la evidencia real de ejecucion de pruebas y riesgos residuales del MVP
-- [ ] 6.3 Alinear la documentacion de entrega con el estado real del cambio antes del cierre
+- [x] 6.3 Alinear la documentacion de entrega con el estado real del cambio antes del cierre
 
 ## 7. Final Validation
 
