@@ -41,8 +41,8 @@ public class ReportService {
         for (CourseService.ActivitySummary activity : course.activities()) {
             Double grade = course.grades().stream()
                     .filter(item -> item.studentId().equals(studentIdentifier) && item.activityId().equals(activity.id()))
-                    .map(CourseService.GradeSummary::grade)
                     .findFirst()
+                    .map(CourseService.GradeSummary::grade)
                     .orElse(null);
 
             double gradeForAverage = grade == null ? 0.0 : grade;
