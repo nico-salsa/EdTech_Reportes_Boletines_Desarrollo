@@ -43,6 +43,56 @@ Historias incluidas:
 - Validar como minimo el backend con `.\gradlew.bat check` y el frontend con `pnpm --dir frontend build`
 - Mantener cobertura automatizada minima del `80%` en lineas del backend; el reporte local queda en `backend/build/reports/jacoco/test/html/index.html`
 
+## Ejecucion local
+
+Requisitos minimos:
+
+- `Java 21`
+- `Node.js 20+`
+- `pnpm 10+`
+
+### Levantar backend
+
+Desde `backend/`:
+
+```powershell
+.\gradlew.bat bootRun
+```
+
+Validacion recomendada:
+
+```powershell
+.\gradlew.bat check
+```
+
+Detalles:
+
+- API disponible en `http://localhost:8080/api`
+- Base de datos local en `backend/data/edtech.db`
+- `check` compila, ejecuta pruebas y exige al menos `80%` de cobertura del backend
+
+### Levantar frontend
+
+Desde `frontend/`:
+
+```powershell
+pnpm install
+pnpm dev
+```
+
+Detalles:
+
+- Frontend disponible en `http://localhost:5173`
+- Si no defines `VITE_API_BASE_URL`, el cliente usa `http://localhost:8080/api`
+
+### Flujo rapido recomendado
+
+1. Entrar a `backend/` y ejecutar `.\gradlew.bat bootRun`
+2. En otra terminal, entrar a `frontend/`
+3. Ejecutar `pnpm install`
+4. Ejecutar `pnpm dev`
+5. Abrir `http://localhost:5173`
+
 ## Artefactos de contexto
 
 - Decisiones tecnicas persistentes: `docs/DECISIONES_TECNICAS_MVP.md`
