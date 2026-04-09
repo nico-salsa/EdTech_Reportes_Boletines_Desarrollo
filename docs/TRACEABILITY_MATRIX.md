@@ -9,4 +9,4 @@
 | Exportacion individual | `student-report-export` | `backend/src/main/java/com/edtech/app/report/*`, `frontend/src/app/components/ExportReportModal.tsx` | Formatos `PDF`, `HTML`, `JSON` implementados |
 | Runtime local | `local-runtime-baseline` | `backend/build.gradle.kts`, `frontend/package.json`, `docs/EJECUCION_LOCAL.md` | `.\gradlew.bat check` y `pnpm --dir frontend build` exitosos |
 | Gobierno de ingenieria | `engineering-governance` | `AI_WORKFLOW.md`, `docs/ARCHITECTURE.md`, `docs/ADR/*` | Artefactos creados en este cambio |
-| Quality gates | `quality-gates` | `.github/workflows/ci.yml`, `backend/build.gradle.kts`, `docs/MERGE_CHECKLIST.md` | CI versionado con OpenSpec, backend + cobertura >= 80% y build frontend |
+| Quality gates | `quality-gates` | `.github/workflows/ci.yml`, `.github/workflows/deploy.yml`, `backend/build.gradle.kts`, `docs/MERGE_CHECKLIST.md` | Integracion en PR contra `main`; empaquetado de despliegue al hacer `push` a `main`; backend + cobertura >= 80% y build frontend |

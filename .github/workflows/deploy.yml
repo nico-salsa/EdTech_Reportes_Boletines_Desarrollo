@@ -1,21 +1,17 @@
-name: integration
+name: deploy
 
 on:
-  pull_request:
+  push:
     branches:
       - main
-    types:
-      - opened
-      - synchronize
-      - reopened
-      - ready_for_review
+  workflow_dispatch:
 
 concurrency:
-  group: integration-${{ github.event.pull_request.number || github.ref }}
+  group: deploy-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  validate:
+  package-local-release:
     runs-on: ubuntu-latest
 
     steps:
@@ -38,19 +34,27 @@ jobs:
           distribution: temurin
           java-version: 21
 
-      - name: Install OpenSpec CLI
-        run: npm install -g @fission-ai/openspec
-
-      - name: Validate OpenSpec change
-        run: openspec validate asdd-local-functional-realignment
-
-      - name: Validate backend and coverage
-        working-directory: backend
-        run: chmod +x ./gradlew && ./gradlew check
-
       - name: Install frontend dependencies
         working-directory: frontend
         run: pnpm install --frozen-lockfile
 
-      - name: Validate frontend
+      - name: Build frontend bundle
         run: pnpm --dir frontend build
+
+      - name: Build backend bootJar
+        working-directory: backend
+        run: chmod +x ./gradlew && ./gradlew bootJar
+
+      - name: Upload frontend artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-dist
+          path: frontend/dist
+          if-no-files-found: error
+
+      - name: Upload backend artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-bootjar
+          path: backend/build/libs/*.jar
+          if-no-files-found: error
