@@ -12,7 +12,7 @@
 
 ## 3. Architecture Cleanup
 
-- [ ] 3.1 Resolver inconsistencias criticas del backend que impiden una linea base estable
+- [x] 3.1 Resolver inconsistencias criticas del backend que impiden una linea base estable
 - [x] 3.2 Documentar la direccion arquitectonica real y registrar deuda tecnica visible del modelo de persistencia
 - [ ] 3.3 Eliminar o dejar explicitamente acotados los artefactos estructurales que hoy generan confusion sin aportar al runtime
 
@@ -36,6 +36,6 @@
 
 ## 7. Final Validation
 
-- [ ] 7.1 Ejecutar la validacion final del backend, frontend y artefactos OpenSpec
-- [ ] 7.2 Revisar que la funcionalidad del MVP se mantenga sin ampliar alcance
-- [ ] 7.3 Preparar el cambio para implementacion y cierre incremental con commits atomicos
+- [x] 7.1 Ejecutar la validacion final del backend, frontend y artefactos OpenSpec
+- [x] 7.2 Revisar que la funcionalidad del MVP se mantenga sin ampliar alcance
+- [x] 7.3 Preparar el cambio para implementacion y cierre incremental con commits atomicos
