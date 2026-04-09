@@ -1,4 +1,4 @@
-# TEST_CASES.md — Matriz de Casos de Prueba (v2.0)
+﻿# TEST_CASES.md — Matriz de Casos de Prueba (v2.0)
 
 ## EdTech: Reportes y Boletines Académicos
 
@@ -21,7 +21,6 @@
 | **Prefijo API-** | Caso de prueba de integración de API (automatizar con **Karate**) |
 | **Prefijo E2E-** | Caso de prueba de extremo a extremo (automatizar con **SerenityBDD + Cucumber**) |
 | **Prefijo API-SEC-** | Caso de prueba de seguridad transversal sobre la API |
-| **Acción complementaria** | Cada TC debe registrarse como sub-tarea dentro de su HU correspondiente en GitHub Projects |
 
 ---
 
@@ -136,11 +135,13 @@
 | **Endpoint** | `POST /api/auth/register` |
 | **HU asociada** | HDU_1 — Registrar usuarios |
 | **Prioridad** | Crítica |
+| **Escenario Gherkin** | **Dado** que no existe un docente registrado con ese nombre de usuario **Cuando** el docente se registra proporcionando un nombre de usuario y una contraseña válidos **Entonces** el sistema debe crear la cuenta exitosamente y entregarle un token de sesión |
 | **Precondiciones** | No existe un usuario con el username "docente_juan" |
-| **Request body** | `{ "username": "docente_juan", "password": "Pass1234" }` |
-| **Response esperado** | Status `201 Created` · Body contiene `token` (no nulo) y `username` = "docente_juan" |
-| **Validaciones Karate** | `status 201` · `response.token != null` · `response.username == 'docente_juan'` |
+| **Datos de entrada** | `{ "username": "docente_juan", "password": "Pass1234" }` |
+| **Pasos de ejecución** | 1. Enviar solicitud de registro con username y password válidos |
+| **Resultado esperado** | Status `201 Created` · Body contiene `token` (no nulo) y `username` = "docente_juan" |
 | **Estado** | Sin ejecutar |
+| **Validaciones Karate** | `status 201` · `response.token != null` · `response.username == 'docente_juan'` |
 
 ---
 
@@ -152,11 +153,13 @@
 | **Endpoint** | `POST /api/auth/register` |
 | **HU asociada** | HDU_1 — Registrar usuarios |
 | **Prioridad** | Crítica |
+| **Escenario Gherkin** | **Dado** que un docente intenta registrarse en el sistema **Cuando** envía los datos de registro con el nombre de usuario o la contraseña vacíos **Entonces** el sistema debe rechazar el registro e indicar cuál campo obligatorio falta |
 | **Precondiciones** | Ninguna |
-| **Request body** | Escenario A: `{ "username": "docente_juan", "password": "" }` · Escenario B: `{ "username": "", "password": "Pass1234" }` |
-| **Response esperado** | Status `400 Bad Request` · Body contiene `message` indicando el campo obligatorio faltante |
-| **Validaciones Karate** | `status 400` · `response.message != null` |
+| **Datos de entrada** | Escenario A: `{ "username": "docente_juan", "password": "" }` · Escenario B: `{ "username": "", "password": "Pass1234" }` |
+| **Pasos de ejecución** | 1. Enviar solicitud de registro con al menos un campo obligatorio vacío |
+| **Resultado esperado** | Status `400 Bad Request` · Body contiene `message` indicando el campo obligatorio faltante |
 | **Estado** | Sin ejecutar |
+| **Validaciones Karate** | `status 400` · `response.message != null` |
 
 ---
 
@@ -168,11 +171,13 @@
 | **Endpoint** | `POST /api/auth/register` |
 | **HU asociada** | HDU_1 — Registrar usuarios |
 | **Prioridad** | Crítica |
+| **Escenario Gherkin** | **Dado** que ya existe un docente registrado con un nombre de usuario específico **Cuando** otro docente intenta registrarse con el mismo nombre de usuario **Entonces** el sistema debe rechazar el registro e informar que ese nombre de usuario ya está en uso |
 | **Precondiciones** | Existe un usuario registrado con username "docente_juan" |
-| **Request body** | `{ "username": "docente_juan", "password": "OtraClave99" }` |
-| **Response esperado** | Status `409 Conflict` · Body contiene `message` indicando que el username ya existe |
-| **Validaciones Karate** | `status 409` · `response.message contains 'already'` o equivalente |
+| **Datos de entrada** | `{ "username": "docente_juan", "password": "OtraClave99" }` |
+| **Pasos de ejecución** | 1. Registrar un usuario con username "docente_juan" 2. Intentar registrar otro usuario con el mismo username |
+| **Resultado esperado** | Status `409 Conflict` · Body contiene `message` indicando que el username ya existe |
 | **Estado** | Sin ejecutar |
+| **Validaciones Karate** | `status 409` · `response.message contains 'already'` o equivalente |
 
 ---
 
@@ -184,11 +189,13 @@
 | **Endpoint** | `POST /api/auth/login` |
 | **HU asociada** | HDU_2 — Iniciar sesión |
 | **Prioridad** | Crítica |
+| **Escenario Gherkin** | **Dado** que existe un docente registrado en el sistema **Cuando** el docente inicia sesión con sus credenciales correctas **Entonces** el sistema debe autenticarlo exitosamente y entregarle un token de sesión válido |
 | **Precondiciones** | Existe un usuario registrado con username "docente_juan" y password "Pass1234" |
-| **Request body** | `{ "username": "docente_juan", "password": "Pass1234" }` |
-| **Response esperado** | Status `200 OK` · Body contiene `token` (no nulo) y `username` = "docente_juan" |
-| **Validaciones Karate** | `status 200` · `response.token != null` · `response.username == 'docente_juan'` |
+| **Datos de entrada** | `{ "username": "docente_juan", "password": "Pass1234" }` |
+| **Pasos de ejecución** | 1. Registrar usuario previamente 2. Enviar solicitud de login con credenciales correctas |
+| **Resultado esperado** | Status `200 OK` · Body contiene `token` (no nulo) y `username` = "docente_juan" |
 | **Estado** | Sin ejecutar |
+| **Validaciones Karate** | `status 200` · `response.token != null` · `response.username == 'docente_juan'` |
 
 ---
 
@@ -200,11 +207,13 @@
 | **Endpoint** | `POST /api/auth/login` |
 | **HU asociada** | HDU_2 — Iniciar sesión |
 | **Prioridad** | Crítica |
+| **Escenario Gherkin** | **Dado** que un docente intenta iniciar sesión **Cuando** proporciona credenciales que no corresponden a ningún usuario registrado **Entonces** el sistema debe rechazar el acceso con un mensaje genérico que no revele si el error fue en el usuario o la contraseña |
 | **Precondiciones** | No existe un usuario con las credenciales a utilizar |
-| **Request body** | `{ "username": "usuario_falso", "password": "ClaveIncorrecta" }` |
-| **Response esperado** | Status `401 Unauthorized` · Body contiene mensaje genérico (no revela si falló usuario o contraseña) |
-| **Validaciones Karate** | `status 401` · `response.message !contains 'username'` · `response.message !contains 'password'` |
+| **Datos de entrada** | `{ "username": "usuario_falso", "password": "ClaveIncorrecta" }` |
+| **Pasos de ejecución** | 1. Enviar solicitud de login con credenciales inválidas |
+| **Resultado esperado** | Status `401 Unauthorized` · Body contiene mensaje genérico (no revela si falló usuario o contraseña) |
 | **Estado** | Sin ejecutar |
+| **Validaciones Karate** | `status 401` · `response.message !contains 'username'` · `response.message !contains 'password'` |
 
 ---
 
@@ -216,11 +225,13 @@
 | **Endpoint** | `POST /api/auth/login` |
 | **HU asociada** | HDU_2 — Iniciar sesión |
 | **Prioridad** | Alta |
+| **Escenario Gherkin** | **Dado** que un docente intenta iniciar sesión **Cuando** envía la solicitud con el nombre de usuario o la contraseña vacíos **Entonces** el sistema debe rechazar la solicitud e indicar que los campos son obligatorios |
 | **Precondiciones** | Ninguna |
-| **Request body** | `{ "username": "", "password": "Pass1234" }` |
-| **Response esperado** | Status `400 Bad Request` · Body indica el campo faltante |
-| **Validaciones Karate** | `status 400` · `response.message != null` |
+| **Datos de entrada** | `{ "username": "", "password": "Pass1234" }` |
+| **Pasos de ejecución** | 1. Enviar solicitud de login con al menos un campo vacío |
+| **Resultado esperado** | Status `400 Bad Request` · Body indica el campo faltante |
 | **Estado** | Sin ejecutar |
+| **Validaciones Karate** | `status 400` · `response.message != null` |
 
 ---
 
@@ -232,12 +243,13 @@
 | **Endpoint** | `GET /api/auth/session` |
 | **HU asociada** | HDU_2 — Iniciar sesión |
 | **Prioridad** | Alta |
+| **Escenario Gherkin** | **Dado** que un docente ha iniciado sesión exitosamente y posee un token válido **Cuando** consulta el estado de su sesión **Entonces** el sistema debe confirmar que la sesión está activa y devolver los datos del docente autenticado |
 | **Precondiciones** | Se realizó login exitoso y se obtuvo un token válido |
-| **Headers** | `X-Session-Token: <token_válido>` |
-| **Request body** | — (sin body) |
-| **Response esperado** | Status `200 OK` · Body contiene `token` y `username` del usuario autenticado |
-| **Validaciones Karate** | `status 200` · `response.username == 'docente_juan'` |
+| **Datos de entrada** | Header: `X-Session-Token: <token_válido>` · Sin body |
+| **Pasos de ejecución** | 1. Realizar login exitoso y obtener token 2. Consultar sesión con el token obtenido |
+| **Resultado esperado** | Status `200 OK` · Body contiene `token` y `username` del usuario autenticado |
 | **Estado** | Sin ejecutar |
+| **Validaciones Karate** | `status 200` · `response.username == 'docente_juan'` |
 
 ---
 
@@ -249,12 +261,13 @@
 | **Endpoint** | `GET /api/auth/session` |
 | **HU asociada** | HDU_2 — Iniciar sesión |
 | **Prioridad** | Alta |
+| **Escenario Gherkin** | **Dado** que un usuario posee un token de sesión inválido o expirado **Cuando** consulta el estado de su sesión **Entonces** el sistema debe rechazar la solicitud indicando que no está autorizado |
 | **Precondiciones** | Ninguna |
-| **Headers** | `X-Session-Token: token_invalido_123` |
-| **Request body** | — (sin body) |
-| **Response esperado** | Status `401 Unauthorized` |
-| **Validaciones Karate** | `status 401` |
+| **Datos de entrada** | Header: `X-Session-Token: token_invalido_123` · Sin body |
+| **Pasos de ejecución** | 1. Enviar solicitud de consulta de sesión con un token inválido |
+| **Resultado esperado** | Status `401 Unauthorized` |
 | **Estado** | Sin ejecutar |
+| **Validaciones Karate** | `status 401` |
 
 ---
 
@@ -266,12 +279,13 @@
 | **Endpoint** | `POST /api/auth/logout` |
 | **HU asociada** | HDU_2 — Iniciar sesión |
 | **Prioridad** | Alta |
+| **Escenario Gherkin** | **Dado** que un docente tiene una sesión activa **Cuando** cierra su sesión **Entonces** el sistema debe invalidar su token de sesión y cualquier intento posterior de usar ese token debe ser rechazado |
 | **Precondiciones** | Se realizó login exitoso y se obtuvo un token válido |
-| **Headers** | `X-Session-Token: <token_válido>` |
-| **Request body** | — (sin body) |
-| **Response esperado** | Status `204 No Content` · El token queda invalidado para futuras peticiones |
-| **Validaciones Karate** | `status 204` · Petición posterior con el mismo token retorna `401` |
+| **Datos de entrada** | Header: `X-Session-Token: <token_válido>` · Sin body |
+| **Pasos de ejecución** | 1. Realizar login exitoso y obtener token 2. Enviar solicitud de logout con el token 3. Intentar consultar sesión con el mismo token |
+| **Resultado esperado** | Status `204 No Content` · El token queda invalidado para futuras peticiones |
 | **Estado** | Sin ejecutar |
+| **Validaciones Karate** | `status 204` · Petición posterior con el mismo token retorna `401` |
 
 ---
 
@@ -283,12 +297,13 @@
 | **Endpoint** | `POST /api/auth/logout` |
 | **HU asociada** | HDU_2 — Iniciar sesión |
 | **Prioridad** | Media |
+| **Escenario Gherkin** | **Dado** que un usuario posee un token de sesión inválido o expirado **Cuando** intenta cerrar sesión con ese token **Entonces** el sistema debe rechazar la solicitud indicando que no está autorizado |
 | **Precondiciones** | Ninguna |
-| **Headers** | `X-Session-Token: token_invalido_123` |
-| **Request body** | — (sin body) |
-| **Response esperado** | Status `401 Unauthorized` |
-| **Validaciones Karate** | `status 401` |
+| **Datos de entrada** | Header: `X-Session-Token: token_invalido_123` · Sin body |
+| **Pasos de ejecución** | 1. Enviar solicitud de logout con un token inválido |
+| **Resultado esperado** | Status `401 Unauthorized` |
 | **Estado** | Sin ejecutar |
+| **Validaciones Karate** | `status 401` |
 
 ---
 
@@ -304,12 +319,13 @@
 | **Endpoint** | `GET /api/courses` |
 | **HU asociada** | HDU_3 — Crear un nuevo curso |
 | **Prioridad** | Alta |
+| **Escenario Gherkin** | **Dado** que un docente está autenticado y tiene cursos creados **Cuando** consulta su listado de cursos **Entonces** el sistema debe devolver todos los cursos que le pertenecen con su identificador y nombre |
 | **Precondiciones** | El docente está autenticado. Existe al menos un curso creado por el docente |
-| **Headers** | `X-Session-Token: <token_válido>` |
-| **Request body** | — (sin body) |
-| **Response esperado** | Status `200 OK` · Body contiene un array con los cursos del docente (cada item tiene `id` y `name`) |
-| **Validaciones Karate** | `status 200` · `response[0].id != null` · `response[0].name != null` |
+| **Datos de entrada** | Header: `X-Session-Token: <token_válido>` · Sin body |
+| **Pasos de ejecución** | 1. Autenticarse como docente 2. Crear al menos un curso 3. Consultar el listado de cursos |
+| **Resultado esperado** | Status `200 OK` · Body contiene un array con los cursos del docente (cada item tiene `id` y `name`) |
 | **Estado** | Sin ejecutar |
+| **Validaciones Karate** | `status 200` · `response[0].id != null` · `response[0].name != null` |
 
 ---
 
@@ -321,12 +337,13 @@
 | **Endpoint** | `POST /api/courses` |
 | **HU asociada** | HDU_3 — Crear un nuevo curso |
 | **Prioridad** | Crítica |
+| **Escenario Gherkin** | **Dado** que un docente está autenticado y no tiene un curso con ese nombre **Cuando** crea un nuevo curso proporcionando un nombre válido **Entonces** el sistema debe crear el curso exitosamente y devolver sus datos con un identificador único |
 | **Precondiciones** | El docente está autenticado. No existe un curso con el nombre "Matemáticas 101" para este docente |
-| **Headers** | `X-Session-Token: <token_válido>` |
-| **Request body** | `{ "name": "Matemáticas 101" }` |
-| **Response esperado** | Status `201 Created` · Body contiene el curso creado con `id` y `name` = "Matemáticas 101" |
-| **Validaciones Karate** | `status 201` · `response.id != null` · `response.name == 'Matemáticas 101'` |
+| **Datos de entrada** | Header: `X-Session-Token: <token_válido>` · Body: `{ "name": "Matemáticas 101" }` |
+| **Pasos de ejecución** | 1. Autenticarse como docente 2. Enviar solicitud de creación de curso con nombre válido |
+| **Resultado esperado** | Status `201 Created` · Body contiene el curso creado con `id` y `name` = "Matemáticas 101" |
 | **Estado** | Sin ejecutar |
+| **Validaciones Karate** | `status 201` · `response.id != null` · `response.name == 'Matemáticas 101'` |
 
 ---
 
@@ -338,12 +355,13 @@
 | **Endpoint** | `POST /api/courses` |
 | **HU asociada** | HDU_3 — Crear un nuevo curso |
 | **Prioridad** | Alta |
+| **Escenario Gherkin** | **Dado** que un docente ya tiene un curso con un nombre específico **Cuando** intenta crear otro curso con el mismo nombre **Entonces** el sistema debe rechazar la creación e informar que ya existe un curso con ese nombre |
 | **Precondiciones** | El docente está autenticado. Ya existe un curso con nombre "Matemáticas 101" para este docente |
-| **Headers** | `X-Session-Token: <token_válido>` |
-| **Request body** | `{ "name": "Matemáticas 101" }` |
-| **Response esperado** | Status `409 Conflict` · Body contiene `message` indicando que el curso ya existe |
-| **Validaciones Karate** | `status 409` |
+| **Datos de entrada** | Header: `X-Session-Token: <token_válido>` · Body: `{ "name": "Matemáticas 101" }` |
+| **Pasos de ejecución** | 1. Autenticarse como docente 2. Crear curso "Matemáticas 101" 3. Intentar crear otro curso con el mismo nombre |
+| **Resultado esperado** | Status `409 Conflict` · Body contiene `message` indicando que el curso ya existe |
 | **Estado** | Sin ejecutar |
+| **Validaciones Karate** | `status 409` |
 
 ---
 
@@ -355,12 +373,13 @@
 | **Endpoint** | `POST /api/courses` |
 | **HU asociada** | HDU_3 — Crear un nuevo curso |
 | **Prioridad** | Alta |
+| **Escenario Gherkin** | **Dado** que un docente está autenticado **Cuando** intenta crear un curso sin proporcionar un nombre **Entonces** el sistema debe rechazar la creación e indicar que el nombre del curso es obligatorio |
 | **Precondiciones** | El docente está autenticado |
-| **Headers** | `X-Session-Token: <token_válido>` |
-| **Request body** | `{ "name": "" }` |
-| **Response esperado** | Status `400 Bad Request` · Body indica que el nombre es obligatorio |
-| **Validaciones Karate** | `status 400` |
+| **Datos de entrada** | Header: `X-Session-Token: <token_válido>` · Body: `{ "name": "" }` |
+| **Pasos de ejecución** | 1. Autenticarse como docente 2. Enviar solicitud de creación de curso con nombre vacío |
+| **Resultado esperado** | Status `400 Bad Request` · Body indica que el nombre es obligatorio |
 | **Estado** | Sin ejecutar |
+| **Validaciones Karate** | `status 400` |
 
 ---
 
@@ -372,12 +391,13 @@
 | **Endpoint** | `GET /api/courses/{courseId}` |
 | **HU asociada** | HDU_4 — Consultar curso |
 | **Prioridad** | Crítica |
+| **Escenario Gherkin** | **Dado** que un docente está autenticado y tiene un curso con estudiantes, programa y notas **Cuando** consulta el detalle de ese curso **Entonces** el sistema debe devolver la información completa incluyendo estudiantes, actividades evaluativas y promedios |
 | **Precondiciones** | El docente está autenticado. Existe un curso creado con estudiantes, programa y notas |
-| **Headers** | `X-Session-Token: <token_válido>` |
-| **Request body** | — (sin body) |
-| **Response esperado** | Status `200 OK` · Body contiene `id`, `name`, `students[]`, `activities[]` y promedios por estudiante |
-| **Validaciones Karate** | `status 200` · `response.id != null` · `response.students != null` · `response.activities != null` |
+| **Datos de entrada** | Header: `X-Session-Token: <token_válido>` · Parámetro: `courseId` válido · Sin body |
+| **Pasos de ejecución** | 1. Autenticarse como docente 2. Crear curso con estudiantes, programa y notas 3. Consultar detalle del curso |
+| **Resultado esperado** | Status `200 OK` · Body contiene `id`, `name`, `students[]`, `activities[]` y promedios por estudiante |
 | **Estado** | Sin ejecutar |
+| **Validaciones Karate** | `status 200` · `response.id != null` · `response.students != null` · `response.activities != null` |
 
 ---
 
@@ -389,12 +409,13 @@
 | **Endpoint** | `GET /api/courses/{courseId}` |
 | **HU asociada** | HDU_4 — Consultar curso |
 | **Prioridad** | Alta |
+| **Escenario Gherkin** | **Dado** que un docente está autenticado **Cuando** intenta consultar el detalle de un curso que no existe **Entonces** el sistema debe informar que el curso no fue encontrado |
 | **Precondiciones** | El docente está autenticado. No existe un curso con el ID proporcionado |
-| **Headers** | `X-Session-Token: <token_válido>` |
-| **Request body** | — (sin body, `courseId` = "curso_inexistente") |
-| **Response esperado** | Status `404 Not Found` |
-| **Validaciones Karate** | `status 404` |
+| **Datos de entrada** | Header: `X-Session-Token: <token_válido>` · Parámetro: `courseId` = "curso_inexistente" · Sin body |
+| **Pasos de ejecución** | 1. Autenticarse como docente 2. Consultar detalle de un curso con ID inexistente |
+| **Resultado esperado** | Status `404 Not Found` |
 | **Estado** | Sin ejecutar |
+| **Validaciones Karate** | `status 404` |
 
 ---
 
@@ -410,12 +431,13 @@
 | **Endpoint** | `GET /api/students/{studentId}` |
 | **HU asociada** | HDU_5 — Agregar estudiantes a un curso |
 | **Prioridad** | Alta |
+| **Escenario Gherkin** | **Dado** que existe un estudiante registrado en el sistema **Cuando** el docente busca al estudiante por su identificador **Entonces** el sistema debe devolver los datos del estudiante incluyendo su nombre y correo electrónico |
 | **Precondiciones** | El docente está autenticado. Existe un estudiante con ID "1098765432" registrado en el sistema |
-| **Headers** | `X-Session-Token: <token_válido>` |
-| **Request body** | — (sin body) |
-| **Response esperado** | Status `200 OK` · Body contiene `studentId`, `name` y `email` del estudiante |
-| **Validaciones Karate** | `status 200` · `response.studentId == '1098765432'` · `response.name != null` · `response.email != null` |
+| **Datos de entrada** | Header: `X-Session-Token: <token_válido>` · Parámetro: `studentId` = "1098765432" · Sin body |
+| **Pasos de ejecución** | 1. Autenticarse como docente 2. Crear un estudiante previamente 3. Buscar al estudiante por su ID |
+| **Resultado esperado** | Status `200 OK` · Body contiene `studentId`, `name` y `email` del estudiante |
 | **Estado** | Sin ejecutar |
+| **Validaciones Karate** | `status 200` · `response.studentId == '1098765432'` · `response.name != null` · `response.email != null` |
 
 ---
 
@@ -427,12 +449,13 @@
 | **Endpoint** | `GET /api/students/{studentId}` |
 | **HU asociada** | HDU_5 — Agregar estudiantes a un curso |
 | **Prioridad** | Alta |
+| **Escenario Gherkin** | **Dado** que no existe un estudiante con el identificador proporcionado **Cuando** el docente busca al estudiante por ese identificador **Entonces** el sistema debe informar que el estudiante no fue encontrado |
 | **Precondiciones** | El docente está autenticado. No existe un estudiante con el ID proporcionado |
-| **Headers** | `X-Session-Token: <token_válido>` |
-| **Request body** | — (sin body, `studentId` = "0000000000") |
-| **Response esperado** | Status `404 Not Found` |
-| **Validaciones Karate** | `status 404` |
+| **Datos de entrada** | Header: `X-Session-Token: <token_válido>` · Parámetro: `studentId` = "0000000000" · Sin body |
+| **Pasos de ejecución** | 1. Autenticarse como docente 2. Buscar un estudiante con un ID que no existe |
+| **Resultado esperado** | Status `404 Not Found` |
 | **Estado** | Sin ejecutar |
+| **Validaciones Karate** | `status 404` |
 
 ---
 
@@ -444,12 +467,13 @@
 | **Endpoint** | `POST /api/courses/{courseId}/students` |
 | **HU asociada** | HDU_5 — Agregar estudiantes a un curso |
 | **Prioridad** | Crítica |
+| **Escenario Gherkin** | **Dado** que un docente tiene un curso y el estudiante no existe en el sistema **Cuando** inscribe al estudiante proporcionando su identificador, nombre y correo **Entonces** el sistema debe registrar al estudiante en el sistema e inscribirlo en el curso simultáneamente |
 | **Precondiciones** | El docente está autenticado. Existe un curso. No existe un estudiante con ID "1098765432" |
-| **Headers** | `X-Session-Token: <token_válido>` |
-| **Request body** | `{ "studentId": "1098765432", "name": "María López García", "email": "maria.lopez@correo.com" }` |
-| **Response esperado** | Status `200 OK` · Body contiene el detalle del curso actualizado con el nuevo estudiante en la lista |
-| **Validaciones Karate** | `status 200` · `response.students[*].studentId contains '1098765432'` |
+| **Datos de entrada** | Header: `X-Session-Token: <token_válido>` · Body: `{ "studentId": "1098765432", "name": "María López García", "email": "maria.lopez@correo.com" }` |
+| **Pasos de ejecución** | 1. Autenticarse como docente 2. Crear un curso 3. Inscribir estudiante nuevo con todos los datos completos |
+| **Resultado esperado** | Status `200 OK` · Body contiene el detalle del curso actualizado con el nuevo estudiante en la lista |
 | **Estado** | Sin ejecutar |
+| **Validaciones Karate** | `status 200` · `response.students[*].studentId contains '1098765432'` |
 
 ---
 
@@ -461,12 +485,13 @@
 | **Endpoint** | `POST /api/courses/{courseId}/students` |
 | **HU asociada** | HDU_5 — Agregar estudiantes a un curso |
 | **Prioridad** | Alta |
+| **Escenario Gherkin** | **Dado** que un docente tiene un curso **Cuando** intenta inscribir un estudiante con campos obligatorios vacíos **Entonces** el sistema debe rechazar la inscripción, indicar el campo faltante y no crear al estudiante parcialmente en el sistema |
 | **Precondiciones** | El docente está autenticado. Existe un curso |
-| **Headers** | `X-Session-Token: <token_válido>` |
-| **Request body** | `{ "studentId": "1098765432", "name": "", "email": "maria.lopez@correo.com" }` |
-| **Response esperado** | Status `400 Bad Request` · Body indica el campo obligatorio faltante. El estudiante NO se crea en el sistema |
-| **Validaciones Karate** | `status 400` · Verificar con `GET /api/students/1098765432` que retorna `404` (no se creó parcialmente) |
+| **Datos de entrada** | Header: `X-Session-Token: <token_válido>` · Body: `{ "studentId": "1098765432", "name": "", "email": "maria.lopez@correo.com" }` |
+| **Pasos de ejecución** | 1. Autenticarse y crear un curso 2. Enviar solicitud de inscripción con nombre vacío 3. Verificar que el estudiante no fue creado en el sistema |
+| **Resultado esperado** | Status `400 Bad Request` · Body indica el campo obligatorio faltante. El estudiante NO se crea en el sistema |
 | **Estado** | Sin ejecutar |
+| **Validaciones Karate** | `status 400` · Verificar con `GET /api/students/1098765432` que retorna `404` (no se creó parcialmente) |
 
 ---
 
@@ -478,12 +503,13 @@
 | **Endpoint** | `POST /api/courses/{courseId}/students` |
 | **HU asociada** | HDU_5 — Agregar estudiantes a un curso |
 | **Prioridad** | Alta |
+| **Escenario Gherkin** | **Dado** que un estudiante ya se encuentra inscrito en un curso **Cuando** el docente intenta inscribirlo nuevamente en el mismo curso **Entonces** el sistema debe rechazar la inscripción e informar que el estudiante ya se encuentra en el curso |
 | **Precondiciones** | El docente está autenticado. Existe un curso. El estudiante "1098765432" ya está inscrito en el curso |
-| **Headers** | `X-Session-Token: <token_válido>` |
-| **Request body** | `{ "studentId": "1098765432", "name": "María López García", "email": "maria.lopez@correo.com" }` |
-| **Response esperado** | Status `409 Conflict` · Body indica que el estudiante ya se encuentra inscrito |
-| **Validaciones Karate** | `status 409` |
+| **Datos de entrada** | Header: `X-Session-Token: <token_válido>` · Body: `{ "studentId": "1098765432", "name": "María López García", "email": "maria.lopez@correo.com" }` |
+| **Pasos de ejecución** | 1. Autenticarse y crear un curso 2. Inscribir al estudiante exitosamente 3. Intentar inscribir al mismo estudiante nuevamente |
+| **Resultado esperado** | Status `409 Conflict` · Body indica que el estudiante ya se encuentra inscrito |
 | **Estado** | Sin ejecutar |
+| **Validaciones Karate** | `status 409` |
 
 ---
 
@@ -495,12 +521,13 @@
 | **Endpoint** | `POST /api/courses/{courseId}/students` |
 | **HU asociada** | HDU_5 — Agregar estudiantes a un curso |
 | **Prioridad** | Crítica |
+| **Escenario Gherkin** | **Dado** que un estudiante ya está registrado en el sistema pero no está inscrito en un curso específico **Cuando** el docente lo inscribe en ese curso **Entonces** el sistema debe inscribirlo exitosamente sin duplicar su registro global en el sistema |
 | **Precondiciones** | El docente está autenticado. Existe un curso. El estudiante "1098765432" ya existe en el sistema pero NO está inscrito en este curso |
-| **Headers** | `X-Session-Token: <token_válido>` |
-| **Request body** | `{ "studentId": "1098765432", "name": "María López García", "email": "maria.lopez@correo.com" }` |
-| **Response esperado** | Status `200 OK` · Body contiene el curso actualizado con el estudiante existente inscrito. No se duplica el registro global del estudiante |
-| **Validaciones Karate** | `status 200` · `response.students[*].studentId contains '1098765432'` |
+| **Datos de entrada** | Header: `X-Session-Token: <token_válido>` · Body: `{ "studentId": "1098765432", "name": "María López García", "email": "maria.lopez@correo.com" }` |
+| **Pasos de ejecución** | 1. Autenticarse y crear dos cursos 2. Inscribir al estudiante en el primer curso (queda registrado globalmente) 3. Inscribir al mismo estudiante en el segundo curso |
+| **Resultado esperado** | Status `200 OK` · Body contiene el curso actualizado con el estudiante existente inscrito. No se duplica el registro global del estudiante |
 | **Estado** | Sin ejecutar |
+| **Validaciones Karate** | `status 200` · `response.students[*].studentId contains '1098765432'` |
 
 ---
 
@@ -516,12 +543,13 @@
 | **Endpoint** | `PUT /api/courses/{courseId}/activities` |
 | **HU asociada** | HDU_11 — Definir programa del curso |
 | **Prioridad** | Crítica |
+| **Escenario Gherkin** | **Dado** que un docente tiene un curso sin programa evaluativo definido **Cuando** define las instancias de evaluación con ponderaciones que suman exactamente el cien por ciento **Entonces** el sistema debe guardar el programa exitosamente y mostrar las instancias creadas con sus ponderaciones |
 | **Precondiciones** | El docente está autenticado. Existe un curso sin programa definido |
-| **Headers** | `X-Session-Token: <token_válido>` |
-| **Request body** | `[{ "name": "Parcial 1", "percentage": 30 }, { "name": "Parcial 2", "percentage": 30 }, { "name": "Examen Final", "percentage": 40 }]` |
-| **Response esperado** | Status `200 OK` · Body contiene el curso con 3 instancias evaluatorias definidas (30 % + 30 % + 40 %) |
-| **Validaciones Karate** | `status 200` · `response.activities.length == 3` · Cada actividad tiene `id`, `name` y `percentage` |
+| **Datos de entrada** | Header: `X-Session-Token: <token_válido>` · Body: `[{ "name": "Parcial 1", "percentage": 30 }, { "name": "Parcial 2", "percentage": 30 }, { "name": "Examen Final", "percentage": 40 }]` |
+| **Pasos de ejecución** | 1. Autenticarse como docente 2. Crear un curso 3. Definir el programa evaluativo con 3 instancias que sumen 100 % |
+| **Resultado esperado** | Status `200 OK` · Body contiene el curso con 3 instancias evaluatorias definidas (30 % + 30 % + 40 %) |
 | **Estado** | Sin ejecutar |
+| **Validaciones Karate** | `status 200` · `response.activities.length == 3` · Cada actividad tiene `id`, `name` y `percentage` |
 
 ---
 
@@ -533,12 +561,13 @@
 | **Endpoint** | `PUT /api/courses/{courseId}/activities` |
 | **HU asociada** | HDU_11 — Definir programa del curso |
 | **Prioridad** | Crítica |
+| **Escenario Gherkin** | **Dado** que un docente tiene un curso **Cuando** intenta definir un programa evaluativo con ponderaciones que no suman cien por ciento **Entonces** el sistema debe rechazar el programa e indicar que la suma de ponderaciones es incorrecta |
 | **Precondiciones** | El docente está autenticado. Existe un curso |
-| **Headers** | `X-Session-Token: <token_válido>` |
-| **Request body** | `[{ "name": "Parcial 1", "percentage": 40 }, { "name": "Parcial 2", "percentage": 40 }]` (suma = 80 %) |
-| **Response esperado** | Status `400 Bad Request` · Body indica que la suma de ponderaciones debe ser exactamente 100 % |
-| **Validaciones Karate** | `status 400` · `response.message contains '100'` |
+| **Datos de entrada** | Header: `X-Session-Token: <token_válido>` · Body: `[{ "name": "Parcial 1", "percentage": 40 }, { "name": "Parcial 2", "percentage": 40 }]` (suma = 80 %) |
+| **Pasos de ejecución** | 1. Autenticarse como docente y crear un curso 2. Definir programa con ponderaciones que sumen 80 % |
+| **Resultado esperado** | Status `400 Bad Request` · Body indica que la suma de ponderaciones debe ser exactamente 100 % |
 | **Estado** | Sin ejecutar |
+| **Validaciones Karate** | `status 400` · `response.message contains '100'` |
 
 ---
 
@@ -550,12 +579,13 @@
 | **Endpoint** | `PUT /api/courses/{courseId}/activities` |
 | **HU asociada** | HDU_11 — Definir programa del curso |
 | **Prioridad** | Alta |
+| **Escenario Gherkin** | **Dado** que un docente tiene un curso **Cuando** intenta definir un programa evaluativo con una instancia que no tiene nombre **Entonces** el sistema debe rechazar el programa e indicar que todas las instancias deben tener un nombre |
 | **Precondiciones** | El docente está autenticado. Existe un curso |
-| **Headers** | `X-Session-Token: <token_válido>` |
-| **Request body** | `[{ "name": "", "percentage": 50 }, { "name": "Examen Final", "percentage": 50 }]` |
-| **Response esperado** | Status `400 Bad Request` · Body indica que no se permiten instancias sin nombre |
-| **Validaciones Karate** | `status 400` |
+| **Datos de entrada** | Header: `X-Session-Token: <token_válido>` · Body: `[{ "name": "", "percentage": 50 }, { "name": "Examen Final", "percentage": 50 }]` |
+| **Pasos de ejecución** | 1. Autenticarse como docente y crear un curso 2. Definir programa con una instancia sin nombre |
+| **Resultado esperado** | Status `400 Bad Request` · Body indica que no se permiten instancias sin nombre |
 | **Estado** | Sin ejecutar |
+| **Validaciones Karate** | `status 400` |
 
 ---
 
@@ -567,12 +597,13 @@
 | **Endpoint** | `PUT /api/courses/{courseId}/activities` |
 | **HU asociada** | HDU_11 — Definir programa del curso |
 | **Prioridad** | Alta |
+| **Escenario Gherkin** | **Dado** que un docente tiene un curso **Cuando** intenta definir un programa evaluativo con dos instancias que tienen el mismo nombre **Entonces** el sistema debe rechazar el programa e indicar que los nombres de las instancias deben ser únicos |
 | **Precondiciones** | El docente está autenticado. Existe un curso |
-| **Headers** | `X-Session-Token: <token_válido>` |
-| **Request body** | `[{ "name": "Parcial", "percentage": 50 }, { "name": "Parcial", "percentage": 50 }]` |
-| **Response esperado** | Status `400 Bad Request` · Body indica que no se permiten nombres duplicados |
-| **Validaciones Karate** | `status 400` |
+| **Datos de entrada** | Header: `X-Session-Token: <token_válido>` · Body: `[{ "name": "Parcial", "percentage": 50 }, { "name": "Parcial", "percentage": 50 }]` |
+| **Pasos de ejecución** | 1. Autenticarse como docente y crear un curso 2. Definir programa con dos instancias llamadas igual |
+| **Resultado esperado** | Status `400 Bad Request` · Body indica que no se permiten nombres duplicados |
 | **Estado** | Sin ejecutar |
+| **Validaciones Karate** | `status 400` |
 
 ---
 
@@ -584,12 +615,13 @@
 | **Endpoint** | `PUT /api/courses/{courseId}/activities` |
 | **HU asociada** | HDU_11 — Definir programa del curso |
 | **Prioridad** | Alta |
+| **Escenario Gherkin** | **Dado** que un docente tiene un curso **Cuando** intenta definir un programa evaluativo con una instancia cuya ponderación es cero o negativa **Entonces** el sistema debe rechazar el programa e indicar que cada instancia debe tener una ponderación mayor a cero |
 | **Precondiciones** | El docente está autenticado. Existe un curso |
-| **Headers** | `X-Session-Token: <token_válido>` |
-| **Request body** | Escenario A: `[{ "name": "Parcial 1", "percentage": 0 }, { "name": "Final", "percentage": 100 }]` · Escenario B: `[{ "name": "Parcial 1", "percentage": -10 }, { "name": "Final", "percentage": 110 }]` |
-| **Response esperado** | Status `400 Bad Request` · Body indica que cada instancia debe tener ponderación mayor al 0 % |
-| **Validaciones Karate** | `status 400` |
+| **Datos de entrada** | Header: `X-Session-Token: <token_válido>` · Escenario A: `[{ "name": "Parcial 1", "percentage": 0 }, { "name": "Final", "percentage": 100 }]` · Escenario B: `[{ "name": "Parcial 1", "percentage": -10 }, { "name": "Final", "percentage": 110 }]` |
+| **Pasos de ejecución** | 1. Autenticarse como docente y crear un curso 2. Intentar definir programa con ponderación 0 (Escenario A) 3. Intentar definir programa con ponderación negativa (Escenario B) |
+| **Resultado esperado** | Status `400 Bad Request` · Body indica que cada instancia debe tener ponderación mayor al 0 % |
 | **Estado** | Sin ejecutar |
+| **Validaciones Karate** | `status 400` |
 
 ---
 
@@ -601,12 +633,13 @@
 | **Endpoint** | `PUT /api/courses/{courseId}/activities` |
 | **HU asociada** | HDU_13 — Actualizar instancia de evaluación del programa |
 | **Prioridad** | Crítica |
+| **Escenario Gherkin** | **Dado** que un curso tiene un programa evaluativo definido con ponderaciones vigentes **Cuando** el docente modifica las ponderaciones de las instancias manteniendo la suma en cien por ciento **Entonces** el sistema debe actualizar las ponderaciones exitosamente y recalcular los promedios si existen notas registradas |
 | **Precondiciones** | El docente está autenticado. Existe un curso con programa: Parcial 1 (30 %), Parcial 2 (30 %), Examen Final (40 %) |
-| **Headers** | `X-Session-Token: <token_válido>` |
-| **Request body** | `[{ "id": "<id_parcial1>", "name": "Parcial 1", "percentage": 20 }, { "id": "<id_parcial2>", "name": "Parcial 2", "percentage": 40 }, { "id": "<id_final>", "name": "Examen Final", "percentage": 40 }]` |
-| **Response esperado** | Status `200 OK` · Body refleja las nuevas ponderaciones (20 % + 40 % + 40 %). Si existían notas, los promedios fueron recalculados |
-| **Validaciones Karate** | `status 200` · Verificar que las ponderaciones coinciden con las enviadas |
+| **Datos de entrada** | Header: `X-Session-Token: <token_válido>` · Body: `[{ "id": "<id_parcial1>", "name": "Parcial 1", "percentage": 20 }, { "id": "<id_parcial2>", "name": "Parcial 2", "percentage": 40 }, { "id": "<id_final>", "name": "Examen Final", "percentage": 40 }]` |
+| **Pasos de ejecución** | 1. Autenticarse y crear un curso 2. Definir programa original (30/30/40) 3. Actualizar ponderaciones a (20/40/40) |
+| **Resultado esperado** | Status `200 OK` · Body refleja las nuevas ponderaciones (20 % + 40 % + 40 %). Si existían notas, los promedios fueron recalculados |
 | **Estado** | Sin ejecutar |
+| **Validaciones Karate** | `status 200` · Verificar que las ponderaciones coinciden con las enviadas |
 
 ---
 
@@ -618,12 +651,13 @@
 | **Endpoint** | `PUT /api/courses/{courseId}/activities` |
 | **HU asociada** | HDU_12 — Eliminar instancia de evaluación del programa |
 | **Prioridad** | Crítica |
+| **Escenario Gherkin** | **Dado** que un curso tiene un programa evaluativo con tres instancias **Cuando** el docente elimina una instancia y redistribuye las ponderaciones de las restantes para que sumen cien por ciento **Entonces** el sistema debe guardar el programa con solo dos instancias y la instancia eliminada ya no debe existir |
 | **Precondiciones** | El docente está autenticado. Existe un curso con programa de 3 instancias: Parcial 1 (30 %), Parcial 2 (30 %), Examen Final (40 %) |
-| **Headers** | `X-Session-Token: <token_válido>` |
-| **Request body** | `[{ "id": "<id_parcial1>", "name": "Parcial 1", "percentage": 40 }, { "id": "<id_final>", "name": "Examen Final", "percentage": 60 }]` (se omite Parcial 2) |
-| **Response esperado** | Status `200 OK` · Body contiene solo 2 instancias (40 % + 60 %). "Parcial 2" ya no existe |
-| **Validaciones Karate** | `status 200` · `response.activities.length == 2` · Ninguna actividad se llama "Parcial 2" |
+| **Datos de entrada** | Header: `X-Session-Token: <token_válido>` · Body: `[{ "id": "<id_parcial1>", "name": "Parcial 1", "percentage": 40 }, { "id": "<id_final>", "name": "Examen Final", "percentage": 60 }]` (se omite Parcial 2) |
+| **Pasos de ejecución** | 1. Autenticarse y crear un curso 2. Definir programa con 3 instancias (30/30/40) 3. Enviar programa actualizado con solo 2 instancias (40/60), omitiendo Parcial 2 |
+| **Resultado esperado** | Status `200 OK` · Body contiene solo 2 instancias (40 % + 60 %). "Parcial 2" ya no existe |
 | **Estado** | Sin ejecutar |
+| **Validaciones Karate** | `status 200` · `response.activities.length == 2` · Ninguna actividad se llama "Parcial 2" |
 
 ---
 
@@ -639,12 +673,13 @@
 | **Endpoint** | `PUT /api/courses/{courseId}/grades` |
 | **HU asociada** | HDU_14 — Registrar nota de una instancia de evaluación |
 | **Prioridad** | Crítica |
+| **Escenario Gherkin** | **Dado** que un curso tiene un programa evaluativo definido y un estudiante inscrito **Cuando** el docente registra una nota válida para el estudiante en una instancia de evaluación **Entonces** el sistema debe guardar la nota y recalcular automáticamente los promedios del estudiante |
 | **Precondiciones** | El docente está autenticado. Existe un curso con programa definido (Parcial 1: 30 %, Parcial 2: 30 %, Examen Final: 40 %). Existe un estudiante inscrito |
-| **Headers** | `X-Session-Token: <token_válido>` |
-| **Request body** | `{ "studentId": "1098765432", "activityId": "<id_parcial1>", "grade": 4.5 }` |
-| **Response esperado** | Status `200 OK` · Body contiene el curso actualizado con la nota 4.5 registrada y los promedios recalculados |
-| **Validaciones Karate** | `status 200` · La nota del estudiante en la actividad = 4.5 · Los promedios del estudiante reflejan el nuevo cálculo |
+| **Datos de entrada** | Header: `X-Session-Token: <token_válido>` · Body: `{ "studentId": "1098765432", "activityId": "<id_parcial1>", "grade": 4.5 }` |
+| **Pasos de ejecución** | 1. Autenticarse, crear curso, definir programa, inscribir estudiante 2. Registrar nota 4.5 en Parcial 1 para el estudiante |
+| **Resultado esperado** | Status `200 OK` · Body contiene el curso actualizado con la nota 4.5 registrada y los promedios recalculados |
 | **Estado** | Sin ejecutar |
+| **Validaciones Karate** | `status 200` · La nota del estudiante en la actividad = 4.5 · Los promedios del estudiante reflejan el nuevo cálculo |
 
 ---
 
@@ -656,12 +691,13 @@
 | **Endpoint** | `PUT /api/courses/{courseId}/grades` |
 | **HU asociada** | HDU_14 — Registrar nota de una instancia de evaluación |
 | **Prioridad** | Alta |
+| **Escenario Gherkin** | **Dado** que un curso tiene un programa evaluativo y un estudiante inscrito **Cuando** el docente intenta registrar una nota con valor negativo **Entonces** el sistema debe rechazar la nota e indicar que no se permiten valores negativos |
 | **Precondiciones** | El docente está autenticado. Existe un curso con programa y un estudiante inscrito |
-| **Headers** | `X-Session-Token: <token_válido>` |
-| **Request body** | `{ "studentId": "1098765432", "activityId": "<id_parcial1>", "grade": -2 }` |
-| **Response esperado** | Status `400 Bad Request` · Body indica que no se permiten notas negativas |
-| **Validaciones Karate** | `status 400` |
+| **Datos de entrada** | Header: `X-Session-Token: <token_válido>` · Body: `{ "studentId": "1098765432", "activityId": "<id_parcial1>", "grade": -2 }` |
+| **Pasos de ejecución** | 1. Autenticarse, crear curso con programa y estudiante inscrito 2. Intentar registrar nota -2 en Parcial 1 |
+| **Resultado esperado** | Status `400 Bad Request` · Body indica que no se permiten notas negativas |
 | **Estado** | Sin ejecutar |
+| **Validaciones Karate** | `status 400` |
 
 ---
 
@@ -673,12 +709,13 @@
 | **Endpoint** | `PUT /api/courses/{courseId}/grades` |
 | **HU asociada** | HDU_14 — Registrar nota de una instancia de evaluación |
 | **Prioridad** | Alta |
+| **Escenario Gherkin** | **Dado** que un curso tiene un programa evaluativo y un estudiante inscrito **Cuando** el docente intenta registrar una nota con caracteres no numéricos **Entonces** el sistema debe rechazar la nota e indicar que el formato del valor es inválido |
 | **Precondiciones** | El docente está autenticado. Existe un curso con programa y un estudiante inscrito |
-| **Headers** | `X-Session-Token: <token_válido>` |
-| **Request body** | `{ "studentId": "1098765432", "activityId": "<id_parcial1>", "grade": "abc#!" }` |
-| **Response esperado** | Status `400 Bad Request` · Body indica error de formato (valor no numérico) |
-| **Validaciones Karate** | `status 400` |
+| **Datos de entrada** | Header: `X-Session-Token: <token_válido>` · Body: `{ "studentId": "1098765432", "activityId": "<id_parcial1>", "grade": "abc#!" }` |
+| **Pasos de ejecución** | 1. Autenticarse, crear curso con programa y estudiante inscrito 2. Intentar registrar nota "abc#!" en Parcial 1 |
+| **Resultado esperado** | Status `400 Bad Request` · Body indica error de formato (valor no numérico) |
 | **Estado** | Sin ejecutar |
+| **Validaciones Karate** | `status 400` |
 
 ---
 
@@ -690,12 +727,13 @@
 | **Endpoint** | `PUT /api/courses/{courseId}/grades` |
 | **HU asociada** | HDU_14 — Registrar nota de una instancia de evaluación |
 | **Prioridad** | Crítica |
+| **Escenario Gherkin** | **Dado** que un estudiante tiene una nota registrada en una instancia y otra instancia sin calificar **Cuando** el docente registra la segunda instancia como nota vacía **Entonces** el sistema debe tratar la nota vacía como cero en el cálculo de promedios y mostrar los promedios recalculados |
 | **Precondiciones** | El docente está autenticado. Existe un curso con programa. Existe un estudiante con una nota previa en otra instancia (ej: Parcial 1 = 4.5) |
-| **Headers** | `X-Session-Token: <token_válido>` |
-| **Request body** | `{ "studentId": "1098765432", "activityId": "<id_parcial2>", "grade": null }` |
-| **Response esperado** | Status `200 OK` · Body contiene el curso actualizado. La nota de Parcial 2 queda marcada como vacía. Los promedios se calculan tratando la nota nula como 0 |
-| **Validaciones Karate** | `status 200` · El promedio ponderado del estudiante refleja 0 en la ponderación de Parcial 2 |
+| **Datos de entrada** | Header: `X-Session-Token: <token_válido>` · Body: `{ "studentId": "1098765432", "activityId": "<id_parcial2>", "grade": null }` |
+| **Pasos de ejecución** | 1. Autenticarse, crear curso con programa, inscribir estudiante 2. Registrar nota 4.5 en Parcial 1 3. Registrar nota nula en Parcial 2 4. Verificar que el promedio trata la nota nula como 0 |
+| **Resultado esperado** | Status `200 OK` · Body contiene el curso actualizado. La nota de Parcial 2 queda marcada como vacía. Los promedios se calculan tratando la nota nula como 0 |
 | **Estado** | Sin ejecutar |
+| **Validaciones Karate** | `status 200` · El promedio ponderado del estudiante refleja 0 en la ponderación de Parcial 2 |
 
 ---
 
@@ -707,13 +745,13 @@
 | **Endpoint** | `PUT /api/courses/{courseId}/activities` → `GET /api/courses/{courseId}` |
 | **HU asociada** | HDU_13 × HDU_14 — Actualización de programa con notas existentes |
 | **Prioridad** | Crítica |
+| **Escenario Gherkin** | **Dado** que un estudiante tiene notas registradas en todas las instancias de evaluación y se conoce su promedio ponderado actual **Cuando** el docente modifica las ponderaciones del programa **Entonces** el sistema debe recalcular automáticamente los promedios del estudiante de acuerdo a las nuevas ponderaciones |
 | **Precondiciones** | El docente está autenticado. Existe un curso con programa (Parcial 1: 30 %, Parcial 2: 30 %, Final: 40 %). Existe un estudiante con notas: Parcial 1 = 4.0, Parcial 2 = 3.0, Final = 5.0. Promedio ponderado previo = (4.0×0.30 + 3.0×0.30 + 5.0×0.40) = 4.10 |
-| **Headers** | `X-Session-Token: <token_válido>` |
-| **Paso 1 — Request** | `PUT /api/courses/{courseId}/activities` con body: `[{ "id": "<p1>", "name": "Parcial 1", "percentage": 20 }, { "id": "<p2>", "name": "Parcial 2", "percentage": 20 }, { "id": "<f>", "name": "Examen Final", "percentage": 60 }]` |
-| **Paso 2 — Verificación** | `GET /api/courses/{courseId}` |
-| **Response esperado** | Nuevo promedio ponderado = (4.0×0.20 + 3.0×0.20 + 5.0×0.60) = 4.40. Los promedios reflejan las nuevas ponderaciones |
-| **Validaciones Karate** | `status 200` en ambos pasos · Promedio ponderado del estudiante = 4.40 (o equivalente según precisión decimal) |
+| **Datos de entrada** | Header: `X-Session-Token: <token_válido>` · Paso 1 Body: `[{ "id": "<p1>", "name": "Parcial 1", "percentage": 20 }, { "id": "<p2>", "name": "Parcial 2", "percentage": 20 }, { "id": "<f>", "name": "Examen Final", "percentage": 60 }]` · Paso 2: Sin body (GET) |
+| **Pasos de ejecución** | 1. Autenticarse, crear curso, definir programa (30/30/40), inscribir estudiante 2. Registrar notas: P1=4.0, P2=3.0, Final=5.0 3. Actualizar ponderaciones a (20/20/60) 4. Consultar el curso y verificar nuevo promedio |
+| **Resultado esperado** | Nuevo promedio ponderado = (4.0×0.20 + 3.0×0.20 + 5.0×0.60) = 4.40. Los promedios reflejan las nuevas ponderaciones |
 | **Estado** | Sin ejecutar |
+| **Validaciones Karate** | `status 200` en ambos pasos · Promedio ponderado del estudiante = 4.40 (o equivalente según precisión decimal) |
 
 ---
 
@@ -729,12 +767,13 @@
 | **Endpoint** | `GET /api/courses/{courseId}/students/{studentId}/report?format=pdf` |
 | **HU asociada** | HDU_15 — Generar boletín del estudiante |
 | **Prioridad** | Crítica |
+| **Escenario Gherkin** | **Dado** que un estudiante tiene todas sus notas registradas en un curso **Cuando** el docente solicita generar el boletín del estudiante en formato PDF **Entonces** el sistema debe generar y entregar un archivo PDF válido con los datos académicos del estudiante |
 | **Precondiciones** | El docente está autenticado. Existe un curso con programa definido. Existe un estudiante con todas las notas registradas |
-| **Headers** | `X-Session-Token: <token_válido>` |
-| **Request body** | — (sin body, query param `format=pdf`) |
-| **Response esperado** | Status `200 OK` · Header `Content-Disposition: attachment` · Header `Content-Type: application/pdf` · Body binario no vacío |
-| **Validaciones Karate** | `status 200` · `responseHeaders['Content-Type'] contains 'pdf'` · `responseBytes.length > 0` |
+| **Datos de entrada** | Header: `X-Session-Token: <token_válido>` · Query param: `format=pdf` · Sin body |
+| **Pasos de ejecución** | 1. Autenticarse, crear curso, definir programa, inscribir estudiante, registrar notas completas 2. Solicitar boletín en formato PDF |
+| **Resultado esperado** | Status `200 OK` · Header `Content-Disposition: attachment` · Header `Content-Type: application/pdf` · Body binario no vacío |
 | **Estado** | Sin ejecutar |
+| **Validaciones Karate** | `status 200` · `responseHeaders['Content-Type'] contains 'pdf'` · `responseBytes.length > 0` |
 
 ---
 
@@ -746,12 +785,13 @@
 | **Endpoint** | `GET /api/courses/{courseId}/students/{studentId}/report?format=html` |
 | **HU asociada** | HDU_15 — Generar boletín del estudiante |
 | **Prioridad** | Alta |
+| **Escenario Gherkin** | **Dado** que un estudiante tiene todas sus notas registradas en un curso **Cuando** el docente solicita generar el boletín en formato HTML **Entonces** el sistema debe generar una página HTML válida que contenga los datos académicos del estudiante |
 | **Precondiciones** | El docente está autenticado. Existe un curso con programa y un estudiante con notas completas |
-| **Headers** | `X-Session-Token: <token_válido>` |
-| **Request body** | — (sin body, query param `format=html`) |
-| **Response esperado** | Status `200 OK` · Header `Content-Type: text/html` · Body contiene HTML válido con datos del estudiante |
-| **Validaciones Karate** | `status 200` · `responseHeaders['Content-Type'] contains 'html'` · `response contains '<html'` o equivalente |
+| **Datos de entrada** | Header: `X-Session-Token: <token_válido>` · Query param: `format=html` · Sin body |
+| **Pasos de ejecución** | 1. Autenticarse, crear curso con programa, inscribir estudiante, registrar notas completas 2. Solicitar boletín en formato HTML |
+| **Resultado esperado** | Status `200 OK` · Header `Content-Type: text/html` · Body contiene HTML válido con datos del estudiante |
 | **Estado** | Sin ejecutar |
+| **Validaciones Karate** | `status 200` · `responseHeaders['Content-Type'] contains 'html'` · `response contains '<html'` o equivalente |
 
 ---
 
@@ -763,12 +803,13 @@
 | **Endpoint** | `GET /api/courses/{courseId}/students/{studentId}/report?format=json` |
 | **HU asociada** | HDU_15 — Generar boletín del estudiante |
 | **Prioridad** | Alta |
+| **Escenario Gherkin** | **Dado** que un estudiante tiene todas sus notas registradas en un curso **Cuando** el docente solicita generar el boletín en formato JSON **Entonces** el sistema debe devolver un documento JSON con los datos del estudiante, sus notas por instancia y los promedios calculados |
 | **Precondiciones** | El docente está autenticado. Existe un curso con programa y un estudiante con notas completas |
-| **Headers** | `X-Session-Token: <token_válido>` |
-| **Request body** | — (sin body, query param `format=json`) |
-| **Response esperado** | Status `200 OK` · Header `Content-Type: application/json` · Body contiene JSON con datos del estudiante, notas por instancia y promedios |
-| **Validaciones Karate** | `status 200` · `response.studentId != null` · `response.grades != null` · `response.averages != null` |
+| **Datos de entrada** | Header: `X-Session-Token: <token_válido>` · Query param: `format=json` · Sin body |
+| **Pasos de ejecución** | 1. Autenticarse, crear curso con programa, inscribir estudiante, registrar notas completas 2. Solicitar boletín en formato JSON |
+| **Resultado esperado** | Status `200 OK` · Header `Content-Type: application/json` · Body contiene JSON con datos del estudiante, notas por instancia y promedios |
 | **Estado** | Sin ejecutar |
+| **Validaciones Karate** | `status 200` · `response.studentId != null` · `response.grades != null` · `response.averages != null` |
 
 ---
 
@@ -780,12 +821,13 @@
 | **Endpoint** | `GET /api/courses/{courseId}/students/{studentId}/report?format=xml` |
 | **HU asociada** | HDU_15 — Generar boletín del estudiante |
 | **Prioridad** | Alta |
+| **Escenario Gherkin** | **Dado** que un docente quiere generar el boletín de un estudiante **Cuando** solicita el boletín en un formato que el sistema no soporta **Entonces** el sistema debe rechazar la solicitud e informar que el formato no es válido |
 | **Precondiciones** | El docente está autenticado. Existe un curso y un estudiante |
-| **Headers** | `X-Session-Token: <token_válido>` |
-| **Request body** | — (sin body, query param `format=xml`) |
-| **Response esperado** | Status `400 Bad Request` · Body indica que el formato no es soportado |
-| **Validaciones Karate** | `status 400` |
+| **Datos de entrada** | Header: `X-Session-Token: <token_válido>` · Query param: `format=xml` · Sin body |
+| **Pasos de ejecución** | 1. Autenticarse, crear curso con programa, inscribir estudiante 2. Solicitar boletín con formato "xml" (no soportado) |
+| **Resultado esperado** | Status `400 Bad Request` · Body indica que el formato no es soportado |
 | **Estado** | Sin ejecutar |
+| **Validaciones Karate** | `status 400` |
 
 ---
 
@@ -797,12 +839,13 @@
 | **Endpoint** | `GET /api/courses/{courseId}/students/{studentId}/report?format=json` |
 | **HU asociada** | HDU_15 — Generar boletín del estudiante |
 | **Prioridad** | Crítica |
+| **Escenario Gherkin** | **Dado** que un estudiante tiene al menos una nota vacía en su programa evaluativo **Cuando** el docente solicita generar su boletín **Entonces** el sistema debe generar el boletín mostrando las notas vacías y calculando los promedios tratando las notas sin registrar como cero |
 | **Precondiciones** | El docente está autenticado. Existe un curso con programa. Existe un estudiante con al menos una nota vacía (nula) |
-| **Headers** | `X-Session-Token: <token_válido>` |
-| **Request body** | — (sin body, query param `format=json`) |
-| **Response esperado** | Status `200 OK` · Body contiene el boletín. Las notas vacías se reflejan como `null` o `0` según diseño. Los promedios tratan nulas como 0 |
-| **Validaciones Karate** | `status 200` · Los promedios son coherentes con la "Regla de Oro" (nulas = 0) |
+| **Datos de entrada** | Header: `X-Session-Token: <token_válido>` · Query param: `format=json` · Sin body |
+| **Pasos de ejecución** | 1. Autenticarse, crear curso con programa, inscribir estudiante 2. Registrar nota solo en una instancia, dejando otra vacía 3. Solicitar boletín en formato JSON |
+| **Resultado esperado** | Status `200 OK` · Body contiene el boletín. Las notas vacías se reflejan como `null` o `0` según diseño. Los promedios tratan nulas como 0 |
 | **Estado** | Sin ejecutar |
+| **Validaciones Karate** | `status 200` · Los promedios son coherentes con la "Regla de Oro" (nulas = 0) |
 
 ---
 
@@ -818,12 +861,13 @@
 | **Endpoints** | Todos los endpoints protegidos: `GET /api/courses`, `POST /api/courses`, `GET /api/courses/{id}`, `GET /api/students/{id}`, `POST /api/courses/{id}/students`, `PUT /api/courses/{id}/activities`, `PUT /api/courses/{id}/grades`, `GET /api/.../report` |
 | **HU asociada** | Transversal — Seguridad de sesión |
 | **Prioridad** | Crítica |
+| **Escenario Gherkin** | **Dado** que un usuario no ha iniciado sesión o no proporciona sus credenciales de sesión **Cuando** intenta acceder a cualquier funcionalidad protegida del sistema **Entonces** el sistema debe denegar el acceso e informar que se requiere autenticación |
 | **Precondiciones** | No se envía header `X-Session-Token` (o se envía vacío) |
-| **Headers** | Sin `X-Session-Token` |
-| **Request body** | Varía según endpoint |
-| **Response esperado** | Status `401 Unauthorized` en **todos** los endpoints protegidos |
-| **Validaciones Karate** | Iterar sobre cada endpoint protegido y verificar `status 401`. Usar `Scenario Outline` con tabla de endpoints |
+| **Datos de entrada** | Sin header `X-Session-Token` · Body varía según endpoint |
+| **Pasos de ejecución** | 1. Sin autenticarse, intentar acceder a cada endpoint protegido 2. Verificar que todos responden con error de autenticación |
+| **Resultado esperado** | Status `401 Unauthorized` en **todos** los endpoints protegidos |
 | **Estado** | Sin ejecutar |
+| **Validaciones Karate** | Iterar sobre cada endpoint protegido y verificar `status 401`. Usar `Scenario Outline` con tabla de endpoints |
 
 ---
 
