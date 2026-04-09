@@ -63,11 +63,11 @@ Motivo:
 ### Persistencia
 
 - `SQLite`
-- Acceso con `Spring Data JPA`
+- Acceso con `JdbcTemplate`
 
 Motivo:
 
-- Evita dependencias externas y encaja con el requerimiento de app local.
+- Evita dependencias externas, encaja con el requerimiento de app local y reduce complejidad innecesaria para el MVP actual.
 
 ### Exportacion
 

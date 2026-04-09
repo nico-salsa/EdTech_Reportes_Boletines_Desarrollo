@@ -28,9 +28,10 @@ Registrar la diferencia entre la situacion esperada del repositorio y la realida
 - Se actualizaron las guias operativas base del repositorio.
 - Se creo el paquete minimo de gobierno tecnico y trazabilidad.
 - Se agrego una suite smoke minima de backend y un workflow CI versionado.
+- Se elimino del backend el andamiaje JPA y los modulos vacios que no participaban del runtime real.
 
 ## Brechas que siguen abiertas
 
 - La suite automatizada aun es minima y no cubre de punta a punta programa evaluativo, libro de notas y exportacion.
-- Sigue existiendo deuda tecnica por mezcla de enfoques de persistencia y artefactos estructurales no usados.
+- Aun falta profundizar la limpieza documental de referencias historicas y publicar un contrato API formal.
 - Falta cerrar la documentacion de entrega final y la evidencia automatizada de quality gates.

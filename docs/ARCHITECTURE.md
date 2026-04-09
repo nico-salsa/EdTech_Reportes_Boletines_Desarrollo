@@ -42,15 +42,11 @@ Backend Spring Boot
 
 ## Deuda tecnica visible
 
-- Existe mezcla de codigo operativo con `JdbcTemplate` y esqueletos JPA que hoy no son la ruta principal de runtime.
-- Hay paquetes duplicados por nombre de dominio (`course/courses`, `report/reports`) que generan ruido de arquitectura.
 - No existe todavia un contrato OpenAPI publicado ni suites de prueba automatizadas relevantes en el repo.
 - No existe observabilidad estructurada mas alla de las respuestas HTTP y logs por defecto del framework.
 
 ## Direccion objetivo inmediata
 
-- Mantener el runtime actual estable.
-- Reducir la confusion documental y estructural.
+- Mantener el runtime actual estable sobre `JdbcTemplate` + SQLite.
 - Hacer que especificacion, codigo y validaciones apunten a la misma realidad.
-- Limpiar o acotar progresivamente los artefactos que no participan del flujo principal.
-
+- Seguir ampliando pruebas y contratos sin reintroducir capas estructurales no usadas.

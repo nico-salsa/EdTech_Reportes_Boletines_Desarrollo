@@ -14,7 +14,7 @@
 
 - [x] 3.1 Resolver inconsistencias criticas del backend que impiden una linea base estable
 - [x] 3.2 Documentar la direccion arquitectonica real y registrar deuda tecnica visible del modelo de persistencia
-- [ ] 3.3 Eliminar o dejar explicitamente acotados los artefactos estructurales que hoy generan confusion sin aportar al runtime
+- [x] 3.3 Eliminar o dejar explicitamente acotados los artefactos estructurales que hoy generan confusion sin aportar al runtime
 
 ## 4. Engineering Governance
 

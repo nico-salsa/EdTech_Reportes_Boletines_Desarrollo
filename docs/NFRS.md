@@ -21,11 +21,10 @@
 
 - Objetivo minimo: separar frontend, backend, specs y docs con una fuente de verdad activa.
 - Evidencia actual: cambio OpenSpec activo y artefactos de arquitectura/gobierno creados.
-- Riesgo abierto: mezcla `JdbcTemplate` + esqueletos JPA y paquetes duplicados.
+- Riesgo abierto: aun falta ampliar la cobertura automatizada y publicar contratos API formales.
 
 ## Rendimiento
 
 - Objetivo minimo: no degradar el flujo local del MVP.
 - Evidencia actual: no hay pruebas de carga ejecutadas en esta iteracion.
 - Riesgo abierto: NFR de rendimiento aun no medido formalmente.
-
